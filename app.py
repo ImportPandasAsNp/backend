@@ -6,7 +6,8 @@ from dotenv import load_dotenv
 # import models
 
 from es import esclient
-from ContentMetadata import service
+from ContentMetadata import service as ContentMetadataService
+from ContentFeatures import service as ContentFeatureService
 
 load_dotenv()
 app = FastAPI()
@@ -17,10 +18,16 @@ esclient.getClient()
 async def ping():
     return "Server is Live and Running"
 
+@app.get("/recommend")
+def ping():
+    # print("app")
+    res = ContentFeatureService.getKNNMetadataWithMovieName("home alone")
+    return res
+
 @app.get("/search/text")
 async def ping(q):
     print("app", q)
-    res = service.getIdsWithArguments({"title": q})
+    res = ContentMetadataService.getIdsWithArguments({"genre": q})
     return res
 
 @app.get("/search/voice")

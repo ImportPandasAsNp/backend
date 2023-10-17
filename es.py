@@ -13,18 +13,18 @@ domainName = os.getenv("domainName")
 
 def connectToEs():
     aws_auth = AWS4Auth(awsAccessKey, awsSecretKey, regionName, "es")
-    # es = Elasticsearch(timeout=120, max_retries=10,
-    #     hosts = [{'host': domainName, 'port': 443}],
-    #     http_auth = aws_auth,
-    #     use_ssl = True,
-    #     verify_certs = True,
-    #     connection_class = RequestsHttpConnection)
-    es = AsyncElasticsearch(timeout=120, max_retries=10,
+    es = Elasticsearch(timeout=120, max_retries=10,
         hosts = [{'host': domainName, 'port': 443}],
         http_auth = aws_auth,
         use_ssl = True,
         verify_certs = True,
         connection_class = RequestsHttpConnection)
+    # es = AsyncElasticsearch(timeout=120, max_retries=10,
+    #     hosts = [{'host': domainName, 'port': 443}],
+    #     http_auth = aws_auth,
+    #     use_ssl = True,
+    #     verify_certs = True,
+    #     connection_class = RequestsHttpConnection)
     print("Es connected successfully")
     print(es.ping)
     return es, aws_auth

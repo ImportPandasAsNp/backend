@@ -50,17 +50,17 @@ class QueryBuilder:
         return res
    
 
-async def getIds(idList):
+def getIds(idList):
     print("search", client, aws4auth)
-    # query = {
-    #     "query":{
-    #         "ids":{
-    #             "values":idList
-    #         }
-    #     }
-    # }
+    query = {
+        "query":{
+            "ids":{
+                "values":idList
+            }
+        }
+    }
 
-    # return await client.search(index = indexName, body=query)
+    return client.search(index = indexName, body=query)
 
 
 

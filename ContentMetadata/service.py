@@ -15,23 +15,23 @@ def getMetadataWithIds(idList):
 '''
 
 def getIdsWithArguments(argDict):
-    print("service", argDict)
-    getIds([])
-    # builder = QueryBuilder.builder()
+    # print("service", argDict)
+    # getIds([])
+    builder = QueryBuilder.builder()
 
-    # for key in argDict.keys():
-    #     builder.addQuery(key, argDict[key])
+    for key in argDict.keys():
+        builder.addQuery(key, argDict[key])
 
-    # if len(argDict.keys()) > 0:
-    #     res = await builder.execute()
-    #     print(res)
-    #     return res
-    #     return getIdsFromResult(res)
+    if len(argDict.keys()) > 0:
+        res = builder.execute()
+        # print(res)
+        # return res
+        return getIdsFromResult(res)
     
     return {}
 
 def getIdsFromResult(res):
-    print("service", res)
+    # print("service", res)
     return [data['_id'] for data in res['hits']['hits']]
 
 if __name__=="__main__":
