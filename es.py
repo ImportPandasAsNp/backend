@@ -1,6 +1,6 @@
 import os
 from dotenv import load_dotenv
-from elasticsearch import Elasticsearch,RequestsHttpConnection
+from elasticsearch import AsyncElasticsearch, Elasticsearch,RequestsHttpConnection
 from requests_aws4auth import AWS4Auth
 
 load_dotenv()
@@ -11,25 +11,33 @@ domainName = os.getenv("domainName")
 
 # basicAuth = f"{awsAccessKey}:{awsSecretKey}"
 
-awsauth = AWS4Auth(awsAccessKey, awsSecretKey, regionName, "es")
-
 def connectToEs():
-    es = Elasticsearch(timeout=120, max_retries=10,
+    aws_auth = AWS4Auth(awsAccessKey, awsSecretKey, regionName, "es")
+    # es = Elasticsearch(timeout=120, max_retries=10,
+    #     hosts = [{'host': domainName, 'port': 443}],
+    #     http_auth = aws_auth,
+    #     use_ssl = True,
+    #     verify_certs = True,
+    #     connection_class = RequestsHttpConnection)
+    es = AsyncElasticsearch(timeout=120, max_retries=10,
         hosts = [{'host': domainName, 'port': 443}],
-        http_auth = awsauth,
+        http_auth = aws_auth,
         use_ssl = True,
         verify_certs = True,
         connection_class = RequestsHttpConnection)
     print("Es connected successfully")
     print(es.ping)
-    return es
+    return es, aws_auth
 
 class ESclient:
     def __init__(self) -> None:
         self.client = None
+        self.aws_auth_client = None
     
     def getClient(self):
         if self.client is None:
-            self.client = connectToEs()
+            self.client, self.aws_auth_client = connectToEs()
         
-        return self.client
+        return
+    
+esclient = ESclient()

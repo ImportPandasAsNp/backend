@@ -5,12 +5,11 @@ from dotenv import load_dotenv
 # from models import Content
 # import models
 
-from es import ESclient
+from es import esclient
+from ContentMetadata import service
 
 load_dotenv()
 app = FastAPI()
-esclient = ESclient()
-es = esclient.getClient()
 esclient.getClient()
 # print(es.ping)
 
@@ -20,7 +19,9 @@ async def ping():
 
 @app.get("/search/text")
 async def ping(q):
-    return q
+    print("app", q)
+    res = service.getIdsWithArguments({"title": q})
+    return res
 
 @app.get("/search/voice")
 async def ping():
