@@ -1,6 +1,7 @@
 from UserHistory.mapping import indexName as historyIndex
 from Utils.api import getRecord
 from UserMetadata.service import getIdsWithArguments
+from UserMetadata.mapping import indexName as userMetadataIndex
 from es import esclient
 
 client = esclient.getClient()
@@ -37,11 +38,18 @@ def getHistoryFromIds(idList):
 
     return client.search(index=historyIndex,body=query,size=len(idList))
 
-def getHistoryFromUserNames(nameList):
-    ids = getIdsWithArguments({
-        'name':nameList
-    })
+def getHistoryFromNames(nameList):
+    nameList = [x.lower() for x in nameList]
+    query = {
+        'query':{
+            'terms':{
+                'name':nameList
+            }
+        }
+    }
 
+    ids = client.search(index = userMetadataIndex,body=query,size=len(nameList))
+    ids = [data["_id"] for data in ids['hits']['hits']]
     return getHistoryFromIds(ids)
 
 

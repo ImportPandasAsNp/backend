@@ -1,6 +1,6 @@
 from UserHistory.mapping import indexName as historyIndex
 
-from Utils.api import getRecord,updateRecord
+from Utils.api import getRecord,updateRecord,insertRecord
 from ContentFeatures.service import getFeaturesWithId as getMovieFeaturesWithId
 from UserFeatures.service import getFeaturesWithId as getUserFeaturesWithId
 from UserFeatures.mapping import indexName as featureIndex
@@ -18,10 +18,15 @@ def add(feat1,feat2,alpha):
 
 
 def updateHistory(id, dataElement):
-    record = getRecord(historyIndex,id)
+    try:
+        record = getRecord(historyIndex,id)
 
-    if len(record.keys())==0:
-        return
+    except Exception:
+        insertRecord(historyIndex,{
+            "id":id,
+            "history":[dataElement]
+        })
+
     
     data= record["_source"]
     data['history'].append(dataElement)

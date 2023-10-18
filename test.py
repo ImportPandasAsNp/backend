@@ -8,6 +8,7 @@ from UserHistory.update import updateHistory, updateUserFeature
 from Recommendation.contentbased import recommendBasedOnId,recommendBasedOnName
 from ContentMetadata.service import getMetadataWithIds as movie
 from Recommendation.collaborative import recommendBasedOnId as collabId
+from UserHistory.service import getHistoryFromNames,getHistoryFromIds
 
 
 if __name__ == "__main__":
@@ -25,7 +26,10 @@ if __name__ == "__main__":
     # print(updateUserFeature('123456', ['13644510926972048555',3]))
     # time.sleep(2)
     # print(getFeaturesWithId('123456')[0])
-    print(recommendBasedOnId('123456',{
-        'country':'United States'
-    }))
-    print(movie(['13644510926972048555']))
+    # print(recommendBasedOnId('123456',{
+    #     'country':'United States'
+    # }))
+    # print(movie(['13644510926972048555']))
+    # updateHistory('234567',['1','2'])
+    # print(getAllRecords("user_metadata",size=3))
+    print(getHistoryFromNames(["Aditya","amartya"]))
