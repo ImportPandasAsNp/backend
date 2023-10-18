@@ -5,7 +5,9 @@ from ContentFeatures.service import getFeaturesWithContentName
 from UserFeatures.service import getNearestUsersWithUserName,getNearestUsersWithId,getFeaturesWithId
 from UserHistory.mapping import historyMapping, indexName as historyIndex
 from UserHistory.update import updateHistory, updateUserFeature
-import time
+from Recommendation.contentbased import recommendBasedOnId,recommendBasedOnName
+from ContentMetadata.service import getMetadataWithIds as movie
+from Recommendation.collaborative import recommendBasedOnId as collabId
 
 
 if __name__ == "__main__":
@@ -19,7 +21,11 @@ if __name__ == "__main__":
     # })
     # print(getRecord(historyIndex,'123456'))
     # updateHistory('123456',['4','5'])
-    print(getFeaturesWithId('123456')[0])
-    print(updateUserFeature('123456', ['13644510926972048555',3]))
-    time.sleep(2)
-    print(getFeaturesWithId('123456')[0])
+    # print(getFeaturesWithId('123456')[0])
+    # print(updateUserFeature('123456', ['13644510926972048555',3]))
+    # time.sleep(2)
+    # print(getFeaturesWithId('123456')[0])
+    print(recommendBasedOnId('123456',{
+        'country':'United States'
+    }))
+    print(movie(['13644510926972048555']))
