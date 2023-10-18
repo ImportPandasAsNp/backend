@@ -1,5 +1,6 @@
 from UserFeatures.search import knnQuery, getFeature, getIdsFromResult
 from UserMetadata import service
+from UserMetadata.service import getMetadataWithIds
 
 
 def getKNNMetadataWithFeature(feat,queryDict=None):
@@ -25,13 +26,14 @@ def getKNNMetadataWithFeature(feat,queryDict=None):
 
 def getKNNMetadataWithUserName(userName, queryDict=None):
     searchList = service.getIdsWithArguments({
-        'user_name':userName
+        'name':userName
     })
 
     contentId = 1
 
     if len(searchList)>0:
         contentId = searchList[0]
+        print(contentId)
     else:
         return []
     
@@ -47,10 +49,25 @@ def getFeaturesWithId(id):
 
 def getFeaturesWithUserName(id):
     contentId = service.getIdsWithArguments({
-        'title':id
+        'name':id
     })
 
     if len(contentId) == 0:
         return []
 
     return getFeaturesWithId(contentId[0])
+
+
+def getNearestUsersWithUserName(userName:str):
+
+    nearestUsers = getKNNMetadataWithUserName(userName)
+
+    return nearestUsers
+
+def getNearestUsersWithId(userId:str):
+    idList = getMetadataWithIds([userId])
+
+    if len(idList)==0:
+        return []
+
+    return getKNNMetadataWithUserName(idList[0]["_source"]["name"])

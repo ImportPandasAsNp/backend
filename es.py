@@ -9,11 +9,13 @@ awsSecretKey = os.getenv("awsSecretKey")
 regionName = os.getenv("regionName") 
 domainName = os.getenv("domainName")
 
+print(awsAccessKey,awsSecretKey,domainName)
+
 # basicAuth = f"{awsAccessKey}:{awsSecretKey}"
 
 def connectToEs():
     aws_auth = AWS4Auth(awsAccessKey, awsSecretKey, regionName, "es")
-    es = Elasticsearch(timeout=120, max_retries=10,
+    es = Elasticsearch(timeout=12000, max_retries=10,
         hosts = [{'host': domainName, 'port': 443}],
         http_auth = aws_auth,
         use_ssl = True,
@@ -37,7 +39,6 @@ class ESclient:
     def getClient(self):
         if self.client is None:
             self.client, self.aws_auth_client = connectToEs()
-        
-        return
+        return self.client
     
 esclient = ESclient()

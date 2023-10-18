@@ -1,11 +1,8 @@
-contentMapping = {
+metadataMapping = {
     "properties": {
-        "user_name": {"type": "keyword"},
         "name": {"type": "text"},
         "email": {"type": "keyword"},
         "password": {"type": "keyword"},
-        "director": {"type": "text"},
-        "cast": {"type": "text"},
         "country": {"type": "text"},
         "age_filter": {"type": "keyword"},
         "genre": {"type": "text"},
@@ -14,3 +11,23 @@ contentMapping = {
 }
 
 indexName = "user_metadata"
+
+dummyUser = {
+    "name":"Aditya",
+    "email":"hikeradi@gmail.com",
+    "password":"abcd",
+    "country":"United States",
+    "age_filter":"R",
+    "genre":"comedy",
+    "id":"123456"
+}
+
+dummyUser1 = {
+    "name":"Amartya",
+    "email":"hikeradi@gmail.com",
+    "password":"abcd",
+    "country":"United States",
+    "age_filter":"R",
+    "genre":"comedy",
+    "id":"234567"
+}

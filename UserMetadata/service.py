@@ -16,8 +16,6 @@ def getMetadataWithIds(idList):
     return getUserMetadata(getIds(idList))
 
 def getIdsWithArguments(argDict):
-    # print("service", argDict)
-    # getIds([])
     builder = QueryBuilder.builder()
 
     for key in argDict.keys():
@@ -25,9 +23,7 @@ def getIdsWithArguments(argDict):
 
     if len(argDict.keys()) > 0:
         res = builder.execute()
-        # print(res)
-        return res
-        # return getIdsFromResult(res)
+        return getIdsFromResult(res)
     
     return {}
 
@@ -35,7 +31,7 @@ def getIdsFromResult(res):
     # print("service", res)
     return [data['_id'] for data in res['hits']['hits']]
 
-def chk_user(user_name: str, password: str) -> str:
+def chkUser(user_name: str, password: str) -> str:
     user = getIdsWithArguments({"user_name": user_name})
     if len(user) == 0:
         return None
@@ -43,7 +39,6 @@ def chk_user(user_name: str, password: str) -> str:
         return None
     
     return user[0]
-
 
 if __name__=="__main__":
     print(getIdsWithArguments({
