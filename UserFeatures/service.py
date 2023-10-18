@@ -1,5 +1,5 @@
-from ContentFeatures.search import knnQuery, getFeature, getIdsFromResult
-from ContentMetadata import service
+from UserFeatures.search import knnQuery, getFeature, getIdsFromResult
+from UserMetadata import service
 
 
 def getKNNMetadataWithFeature(feat,queryDict=None):
@@ -23,9 +23,9 @@ def getKNNMetadataWithFeature(feat,queryDict=None):
         return []
 
 
-def getKNNMetadataWithContentName(contentName, queryDict=None):
+def getKNNMetadataWithUserName(userName, queryDict=None):
     searchList = service.getIdsWithArguments({
-        'title':contentName
+        'user_name':userName
     })
 
     contentId = 1
@@ -45,7 +45,7 @@ def getKNNMetadataWithContentName(contentName, queryDict=None):
 def getFeaturesWithId(id):
     return getFeature(id)
 
-def getFeaturesWithContentName(id):
+def getFeaturesWithUserName(id):
     contentId = service.getIdsWithArguments({
         'title':id
     })

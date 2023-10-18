@@ -1,6 +1,6 @@
 # from app import esclient
 from es import esclient
-from ContentMetadata.mapping import indexName
+from UserMetadata.mapping import indexName
 
 esclient.getClient()
 client = esclient.client

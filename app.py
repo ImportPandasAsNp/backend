@@ -1,5 +1,6 @@
 import os
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
+from pydantic import BaseModel
 import uvicorn
 from dotenv import load_dotenv
 # from models import Content
@@ -8,6 +9,7 @@ from dotenv import load_dotenv
 from es import esclient
 from ContentMetadata import service as ContentMetadataService
 from ContentFeatures import service as ContentFeatureService
+from UserMetadata import service as UserMetadataService
 
 load_dotenv()
 app = FastAPI()
@@ -16,13 +18,29 @@ esclient.getClient()
 
 @app.get("/")
 async def ping():
-    return "Server is Live and Running"
+    return {"message":"Server is Live"}
 
-@app.get("/recommend")
-def ping():
-    # print("app")
-    res = ContentFeatureService.getKNNMetadataWithMovieName("home alone")
-    return res
+class Auth(BaseModel):
+    email: str | None = None
+    user_name: str
+    password: str
+
+@app.post("/auth/signup")
+async def ping():
+    print("app")
+    # res = ContentMetadataService.getIdsWithArguments({"genre": q})
+    return
+
+@app.post("/auth/signin")
+async def ping(req: Auth):
+    print("app", req)
+    user = UserMetadataService.chk_user(req.user_name, req.password)
+    # user = None
+    if user is None:
+        return Response(content='{"message": "user not found"}', status_code=401, media_type='application/json')
+
+    return {"message":"user authenticated", "body":user}
+
 
 @app.get("/search/text")
 async def ping(q):
@@ -35,6 +53,11 @@ async def ping():
     return {"status": 200, "value": "coming soon"}
 
 
+@app.get("/recommend")
+def ping():
+    # print("app")
+    res = ContentFeatureService.getKNNMetadataWithContentName("home alone")
+    return res
 
 
 if __name__ == "__main__":
