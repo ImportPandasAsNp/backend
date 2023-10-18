@@ -6,7 +6,7 @@ def createIndex(indexName):
     print(res)
     return res
 
-def getIndex(indexName,id=id):
+def getRecord(indexName,id=id):
     return client.get(index=indexName, doc_type="_doc", id=id)
 
 def getAllIndex():
@@ -61,3 +61,9 @@ def deleteAllRecords(indexName):
 
 def insertRecord(indexName, record):
     client.index(index=indexName, doc_type="_doc", id=record["id"], body = record)
+
+def updateRecord(indexName, record):
+    record = {
+        'doc':record
+    }
+    client.update(index = indexName, id=record['doc']['id'], body=record)
