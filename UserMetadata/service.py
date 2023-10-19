@@ -1,5 +1,9 @@
+import os
 from UserMetadata.search import getIds, QueryBuilder
 from passlib.context import CryptContext
+from Utils import api
+from jose import jwt
+from fastapi import Response
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -16,6 +20,10 @@ def getMetadataWithIds(idList):
     return getUserMetadata(getIds(idList))
 
 def getIdsWithArguments(argDict):
+    res = getIdsWithArguments(argDict)
+    return getIdsFromResult(res)
+
+def getMetadataWithArguments(argDict):
     builder = QueryBuilder.builder()
 
     for key in argDict.keys():
@@ -23,22 +31,48 @@ def getIdsWithArguments(argDict):
 
     if len(argDict.keys()) > 0:
         res = builder.execute()
-        return getIdsFromResult(res)
+        return res['hits']['hits']
     
     return {}
 
 def getIdsFromResult(res):
-    # print("service", res)
     return [data['_id'] for data in res['hits']['hits']]
 
-def chkUser(user_name: str, password: str) -> str:
-    user = getIdsWithArguments({"user_name": user_name})
-    if len(user) == 0:
-        return None
-    if not verify_password(password, user[0]["password"]):
-        return None
+def chkUser(email: str, password: str) -> dict:
+    user = getMetadataWithArguments({"email": email})
+    print("service", user)
+    if not user:
+        return Response(content='{"message": "user not registered"}', status_code=401, media_type='application/json')
+    if not verify_password(password, user[0]["_source"]["password"]):
+        return Response(content='{"message": "Invalid credntials"}', status_code=401, media_type='application/json')
     
-    return user[0]
+    token = jwt.encode({"user_id": user[0]["_id"]}, os.getenv("jwt_secret"))
+    # print("chkUser", getUserIdFromToken(token))
+    return {"message":"user authenticated", "body":{"user": user[0]["_source"], "token": token}}
+
+def createUser(name: str, email: str, password: str) -> dict:
+    user = getMetadataWithArguments({"email": email})
+    if user:
+        return Response(content='{"message": "user already exists"}', status_code=401, media_type='application/json')
+    hashed_password = get_password_hash(password)
+    res = api.insertRecord("user_metadata", {"name":name, "email":email, "password":hashed_password, "country":"United States", "age_filter":"R", "genre":"comedy"})    
+    print("service", res)
+    if res["result"] != "created":
+        return Response(content='{"message": "Internal server error"}', status_code=500, media_type='application/json')
+    
+    token = jwt.encode({"user_id": res["_id"]}, os.getenv("jwt_secret"))
+    
+    return {"message":"user authenticated", "body":{"user": user, "token": token}}
+
+def getUserIdFromToken(token):
+    res = jwt.decode(token, os.getenv("jwt_secret"))
+    return res["user_id"]
+
+def updateProfile(token, req):
+    user_id = getUserIdFromToken(token)
+    res = api.updateRecord("user_metadata", user_id, req)
+    return req
+
 
 if __name__=="__main__":
     print(getIdsWithArguments({

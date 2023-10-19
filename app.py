@@ -1,6 +1,8 @@
 import os
-from fastapi import FastAPI, Response, Request
+import time
+from fastapi import FastAPI, Response, Request, Header
 from pydantic import BaseModel
+from typing import List
 import uvicorn
 import json
 from dotenv import load_dotenv
@@ -18,43 +20,59 @@ esclient.getClient()
 # print(es.ping)
 
 @app.get("/")
-async def ping():
+async def ping(authorization: str = Header(None)):
+    token = authorization.split(' ')[1]
+    print("app, /", authorization, token)
     return {"message":"Server is Live"}
 
 class Auth(BaseModel):
+    name: str | None = None
     email: str
-    user_name: str
     password: str
 
+class WatchHistory(BaseModel):
+    movie_id: str
+    start_time: float
+    duration: int
+    rating: float
+
+class UserProfile(BaseModel):
+    name: str | None = None
+    age_filter: str | None = None
+    country: str | None = None    
+    genre: List[str]
+
 @app.post("/auth/signup")
-async def ping():
-    print("app")
-    # res = ContentMetadataService.getIdsWithArguments({"genre": q})
-    return
+async def ping(req: Auth):
+    res = UserMetadataService.createUser(req.name, req.email, req.password)
+    return res
 
 @app.post("/auth/signin")
 async def ping(req: Auth):
-    print("app", req)
-    user = UserMetadataService.chk_user(req.user_name, req.password)
-    # user = Noney
-    if user is None:
-        return Response(content='{"message": "user not found"}', status_code=401, media_type='application/json')
+    res = UserMetadataService.chkUser(req.email, req.password)
+    return res
 
-    return {"message":"user authenticated", "body":user}
+@app.put("/profile")
+async def ping(req: UserProfile, authorization: str = Header(None)):
+    token = authorization.split(' ')[1]
+    # token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiTHY2YVJvc0JHWkJrWnJhVmJ5bGEifQ.zFGj-07jTAwF74fI0Fqcs6B1RJOyvaBdGKrVyTFiyn8"
+    res = UserMetadataService.updateProfile(token, { "name": req.name, "age_filter": req.age_filter, "country": req.country, "genre": req.genre })
+    return res
 
 
-@app.post("/search/text")
-async def ping(request: Request):
+@app.get("/search/text")
+async def ping(request: str) -> []:
     # print("app", q)
-    request =  await request.body()
-    request = json.loads(request.decode())
+    # request =  await request.body()
+    # request = json.loads(request.decode())
 
-    if 'query' not in request.keys():
-        return []
+    # if 'query' not in request.keys():
+    #     return []
     
-    res = ContentMetadataService.getIdsWithArguments(request["query"])
-    movies = ContentMetadataService.getMetadataWithIds(res)
-    return movies
+    # res = ContentMetadataService.getMetadataWithArguments(request["query"])
+
+    res = ContentMetadataService.getMetadataWithArguments({"genre": request})
+    return res
 
 @app.get("/search/voice")
 async def ping():

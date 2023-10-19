@@ -43,27 +43,24 @@ def getMapping(indexName):
 def getAllRecords(indexName, size=1):
     dataQuery={
       "size":size,
-    "query" : {
-        "match_all" : {}
-    }
+        "query" : {
+            "match_all" : {}
+        }
     }
     res = client.search(index=indexName, body=dataQuery, ignore=400)
     return res
 
 def deleteAllRecords(indexName):
   data={
-    "query": {
-        "match_all": {}
+        "query": {
+            "match_all": {}
+        }
     }
-}
   res=client.delete_by_query(index=indexName,doc_type="_doc",body=data)
   return res
 
 def insertRecord(indexName, record):
-    client.index(index=indexName, doc_type="_doc", id=record["id"], body = record)
+    return client.index(index=indexName, doc_type="_doc", body = record)
 
-def updateRecord(indexName, record):
-    record = {
-        'doc':record
-    }
-    client.update(index = indexName, id=record['doc']['id'], body=record)
+def updateRecord(indexName, id, record):
+    return client.update(index = indexName, id=id, body={"doc": record})
