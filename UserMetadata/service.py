@@ -20,7 +20,7 @@ def getMetadataWithIds(idList):
     return getUserMetadata(getIds(idList))
 
 def getIdsWithArguments(argDict):
-    res = getIdsWithArguments(argDict)
+    res = getMetadataWithArguments(argDict)
     return getIdsFromResult(res)
 
 def getMetadataWithArguments(argDict):
@@ -36,7 +36,7 @@ def getMetadataWithArguments(argDict):
     return {}
 
 def getIdsFromResult(res):
-    return [data['_id'] for data in res['hits']['hits']]
+    return [data['_id'] for data in res]
 
 def chkUser(email: str, password: str) -> dict:
     user = getMetadataWithArguments({"email": email})

@@ -19,8 +19,13 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-url=os.getenv("chat_gpt_url")
-rapid_api_key=os.getenv("X-RapidAPI-Key")
-rapid_api_host=os.getenv("X-RapidAPI-Host")
-custom_header = {"content-type": "application/json", "X-RapidAPI-Key":rapid_api_key, "X-RapidAPI-Host":rapid_api_host}
-r = requests. post(url=url, headers = custom_header, data=req)
+# url=os.getenv("chat_gpt_url")
+# rapid_api_key=os.getenv("X-RapidAPI-Key")
+# rapid_api_host=os.getenv("X-RapidAPI-Host")
+# custom_header = {"content-type": "application/json", "X-RapidAPI-Key":rapid_api_key, "X-RapidAPI-Host":rapid_api_host}
+# r = requests. post(url=url, headers = custom_header, data=req)
+
+url="https://dummyjson.com/products/add"
+custom_header = {"content-type": "application/json"}
+res = requests.post(url=url, headers=custom_header, data={"title":"random phone"})
+print(res.text)

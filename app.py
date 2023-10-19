@@ -1,5 +1,6 @@
 import os
-import time
+import openai
+import requests
 from fastapi import FastAPI, Response, Request, Header
 from pydantic import BaseModel
 from typing import List
@@ -20,6 +21,7 @@ load_dotenv()
 app = FastAPI()
 esclient.getClient()
 # print(es.ping)
+openai.api_key=os.getenv("open_ai_api_key")
 
 @app.get("/")
 async def ping(authorization: str = Header(None)):
@@ -80,27 +82,47 @@ async def ping(req: WatchHistory, authorization: str = Header(None)):
     token = authorization.split(' ')[1]
     # token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiTHY2YVJvc0JHWkJrWnJhVmJ5bGEifQ.zFGj-07jTAwF74fI0Fqcs6B1RJOyvaBdGKrVyTFiyn8"
     user_id = UserMetadataService.getUserIdFromToken(token)
-    res = UserHistoryService.updateUserHistory(user_id, { "movieId":req.movie_id, "duration": req.duration })
+    res = UserHistoryService.updateUserHistory(user_id, [ req.movie_id, req.duration ])
     return res
 
 
-@app.get("/search/text")
-async def ping(request: str) -> []:
-    # print("app", q)
-    # request =  await request.body()
-    # request = json.loads(request.decode())
+@app.get("/search")
+async def ping(query: str) -> []:
+    req = [
+        {
+            "content": "You are a keyword extractor. Extract the director, cast, genre and title from the following text. Do not suggest any names on your own, or distort the names. Do not add any punctuation to the keywords. If you don't find a keyword fill it with unknown",
+            "role": "system"
+        },
+        {
+            "content": query,
+            "role": "user"
+        }
+    ]
+    completion = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages= req
+    )
 
-    # if 'query' not in request.keys():
-    #     return []
+    parsed_text = completion.choices[0].message.content
+    print("qq", parsed_text)
+    # parsed_text="Title: None Provided\nDirector: Christopher Nolan\nCast: Tom Hardy\nGenre: None Provided"
+    parsed_fields = parsed_text.lower().split("\n")
+    req = dict()
+    for item in parsed_fields:
+        tmp=item.split(":")
+        val = tmp[1].strip().split(", ")
+        if len(val) == 1:
+            if val[0] != "unknown":
+                req.setdefault(tmp[0].strip(), val[0])
+            continue
+        
+        req.setdefault(tmp[0].strip(), val)
+            
     
-    # res = ContentMetadataService.getMetadataWithArguments(request["query"])
+    print(req)
 
-    res = ContentMetadataService.getMetadataWithArguments({"genre": request})
+    res = ContentMetadataService.getMetadataWithArguments(req)
     return res
-
-@app.get("/search/voice")
-async def ping():
-    return {"status": 200, "value": "coming soon"}
 
 
 # @app.post("/recommend")
@@ -116,19 +138,18 @@ async def ping():
 #     res = ContentFeatureService.getKNNMetadataWithContentName(movieName, queryDict)
 #     return res
 
-@app.post("/recommend/userid")
-async def ping(request: Request):
-    request = await request.body()
+@app.post("/recommend")
+async def ping(query: Request, authorization: str = Header(None)):
+    if not authorization:
+        return Response(content='{"message": "user not authenticated"}', status_code=403, media_type='application/json')
+    token = authorization.split(' ')[1]
+    # token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiTHY2YVJvc0JHWkJrWnJhVmJ5bGEifQ.zFGj-07jTAwF74fI0Fqcs6B1RJOyvaBdGKrVyTFiyn8"
+    user_id = UserMetadataService.getUserIdFromToken(token)
+
+    request =  await query.body()
     request = json.loads(request.decode())
-
-    userId = request["id"]
-
-    queryDict = None
-
-    if 'query' in request:
-        queryDict = request['query']
-
-    return getFinalRecommendationsWithId(userId, queryDict=queryDict)
+    
+    return getFinalRecommendationsWithId(user_id, queryDict=request)
 
 
 if __name__ == "__main__":

@@ -15,7 +15,7 @@ def getMetadataWithIds(idList):
 '''
 
 def getIdsWithArguments(argDict):
-    res = getIdsWithArguments(argDict)
+    res = getMetadataWithArguments(argDict)
     return getIdsFromResult(res)
 
 def getMetadataWithArguments(argDict):
@@ -32,7 +32,7 @@ def getMetadataWithArguments(argDict):
 
 def getIdsFromResult(res):
     # print("service", res)
-    return [data['_id'] for data in res['hits']['hits']]
+    return [data['_id'] for data in res]
 
 if __name__=="__main__":
     print(getIdsWithArguments({
