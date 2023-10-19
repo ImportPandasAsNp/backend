@@ -2,6 +2,7 @@ from UserHistory.mapping import indexName as historyIndex
 from Utils.api import getRecord
 from UserMetadata.service import getIdsWithArguments
 from UserMetadata.mapping import indexName as userMetadataIndex
+from UserHistory.update import updateHistory, updateUserFeature
 from es import esclient
 
 client = esclient.getClient()
@@ -52,4 +53,6 @@ def getHistoryFromNames(nameList):
     ids = [data["_id"] for data in ids['hits']['hits']]
     return getHistoryFromIds(ids)
 
-
+def updateUserHistory(id, data):
+    updateHistory(id, data)
+    updateUserFeature(id, data)

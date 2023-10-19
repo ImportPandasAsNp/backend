@@ -6,13 +6,12 @@ from typing import List
 import uvicorn
 import json
 from dotenv import load_dotenv
-# from models import Content
-# import models
 
 from es import esclient
 from ContentMetadata import service as ContentMetadataService
 from ContentFeatures import service as ContentFeatureService
 from UserMetadata import service as UserMetadataService
+from UserHistory import service as UserHistoryService
 
 load_dotenv()
 app = FastAPI()
@@ -32,9 +31,9 @@ class Auth(BaseModel):
 
 class WatchHistory(BaseModel):
     movie_id: str
-    start_time: float
+    # start_time: float
     duration: int
-    rating: float
+    # rating: float
 
 class UserProfile(BaseModel):
     name: str | None = None
@@ -54,9 +53,31 @@ async def ping(req: Auth):
 
 @app.put("/profile")
 async def ping(req: UserProfile, authorization: str = Header(None)):
+    if not authorization:
+        return Response(content='{"message": "user not authenticated"}', status_code=403, media_type='application/json')
     token = authorization.split(' ')[1]
     # token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiTHY2YVJvc0JHWkJrWnJhVmJ5bGEifQ.zFGj-07jTAwF74fI0Fqcs6B1RJOyvaBdGKrVyTFiyn8"
     res = UserMetadataService.updateProfile(token, { "name": req.name, "age_filter": req.age_filter, "country": req.country, "genre": req.genre })
+    return res
+
+@app.get("/history")
+async def ping(authorization: str = Header(None)):
+    if not authorization:
+        return Response(content='{"message": "user not authenticated"}', status_code=403, media_type='application/json')
+    token = authorization.split(' ')[1]
+    # token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiTHY2YVJvc0JHWkJrWnJhVmJ5bGEifQ.zFGj-07jTAwF74fI0Fqcs6B1RJOyvaBdGKrVyTFiyn8"
+    user_id = UserMetadataService.getUserIdFromToken(token)
+    res = UserHistoryService.getHistoryFromId(user_id)
+    return res
+
+@app.put("/history")
+async def ping(req: WatchHistory, authorization: str = Header(None)):
+    if not authorization:
+        return Response(content='{"message": "user not authenticated"}', status_code=403, media_type='application/json')
+    token = authorization.split(' ')[1]
+    # token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiTHY2YVJvc0JHWkJrWnJhVmJ5bGEifQ.zFGj-07jTAwF74fI0Fqcs6B1RJOyvaBdGKrVyTFiyn8"
+    user_id = UserMetadataService.getUserIdFromToken(token)
+    res = UserHistoryService.updateUserHistory(user_id, { "movieId":req.movie_id, "duration": req.duration })
     return res
 
 
