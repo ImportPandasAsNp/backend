@@ -31,8 +31,9 @@ if __name__ == "__main__":
     #     'country':'United States'
     # }))
     # print(movie(['13644510926972048555']))
-    # updateHistory('234567',['13644510926972048555','2'])
+    # updateHistory('123456',['220565352928732451','2'])
     # print(getAllRecords("user_metadata",size=3))
     # print(collabId('123456'))
     # print(feat('13644510926972048555'))
-    print(getFinalRecommendationsWithName('Amartya'))
+    # print(movie(['220565352928732451']))
+    print(getFinalRecommendationsWithId('123456'))

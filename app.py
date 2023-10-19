@@ -13,6 +13,9 @@ from ContentFeatures import service as ContentFeatureService
 from UserMetadata import service as UserMetadataService
 from UserHistory import service as UserHistoryService
 
+
+from Recommendation.reranking import getFinalRecommendationsWithId
+
 load_dotenv()
 app = FastAPI()
 esclient.getClient()
@@ -100,18 +103,32 @@ async def ping():
     return {"status": 200, "value": "coming soon"}
 
 
-@app.post("/recommend")
-async def ping(request: Request):
-    request =  await request.body()
-    request = json.loads(request.decode())
-    movieName = request["name"]
-    queryDict = None
+# @app.post("/recommend")
+# async def ping(request: Request):
+#     request =  await request.body()
+#     request = json.loads(request.decode())
+#     movieName = request["name"]
+#     queryDict = None
     
+#     if 'query' in request:
+#         queryDict = request['query']
+
+#     res = ContentFeatureService.getKNNMetadataWithContentName(movieName, queryDict)
+#     return res
+
+@app.post("/recommend/userid")
+async def ping(request: Request):
+    request = await request.body()
+    request = json.loads(request.decode())
+
+    userId = request["id"]
+
+    queryDict = None
+
     if 'query' in request:
         queryDict = request['query']
 
-    res = ContentFeatureService.getKNNMetadataWithContentName(movieName, queryDict)
-    return res
+    return getFinalRecommendationsWithId(userId, queryDict=queryDict)
 
 
 if __name__ == "__main__":

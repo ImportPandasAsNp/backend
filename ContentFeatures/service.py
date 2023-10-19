@@ -2,7 +2,7 @@ from ContentFeatures.search import knnQuery, getFeature, getIdsFromResult
 from ContentMetadata import service
 
 
-def getKNNMetadataWithFeature(feat,queryDict=None):
+def getKNNMetadataWithFeature(feat,queryDict=None,returnFeatures = False):
     knnDict = {
         'feature':feat
     }
@@ -14,16 +14,23 @@ def getKNNMetadataWithFeature(feat,queryDict=None):
     
     res = knnQuery(knnDict)
     ids = getIdsFromResult(res)
-    # id2FeatDict = 
+
     if len(res)>0:
         metadata = service.getMetadataWithIds(ids)
+
+        if returnFeatures:
+            id2feat = dict(zip([data["_id"] for data in res['hits']['hits']],
+                    [data['_source']['feature'] for data in res['hits']['hits']]))
+            
+            for data in metadata:
+                data['feature'] = id2feat[data["_id"]]
         return metadata
 
     else:
         return []
 
 
-def getKNNMetadataWithContentName(contentName, queryDict=None):
+def getKNNMetadataWithContentName(contentName, queryDict=None, returnFeatures = False):
     searchList = service.getIdsWithArguments({
         'title':contentName
     })
@@ -40,7 +47,7 @@ def getKNNMetadataWithContentName(contentName, queryDict=None):
     if len(feat)==0:
         return []
 
-    return getKNNMetadataWithFeature(feat,queryDict)
+    return getKNNMetadataWithFeature(feat,queryDict, returnFeatures)
 
 def getFeaturesWithId(id):
     return getFeature(id)
