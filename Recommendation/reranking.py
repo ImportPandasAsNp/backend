@@ -9,13 +9,16 @@ def dotProduct(vector1, vector2):
     return np.dot(vector1, vector2)
 
 def getFinalRecommendationsWithId(id, queryDict=None):
-    contentBased = contentId(id, queryDict)
-    collabBased = collabId(id)
+    contentBased = contentId(id, queryDict,returnFeatures=True)
+    collabBased = collabId(id,returnFeatures=True)
     userFeatures = getUserFeaturesWithId(id)
 
     contentBased.extend(collabBased)
 
-    contentBased = sorted(contentBased, key = lambda x:dotProduct(userFeatures, getContentFeaturesWithId(x["_id"])),reverse=True)
+    contentBased = sorted(contentBased, key = lambda x:dotProduct(userFeatures, x['feature']),reverse=True)
+
+    for data in contentBased:
+        del data['feature']
 
     if len(contentBased)<10:
         return contentBased

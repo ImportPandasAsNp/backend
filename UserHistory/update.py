@@ -32,6 +32,8 @@ def updateHistory(id, dataElement):
     data['history'].append(dataElement)
     updateRecord(historyIndex, data)
 
+    updateUserFeature(id,dataElement)
+
 def updateUserFeature(id,dataElement):
     movieId = dataElement[0]
 
