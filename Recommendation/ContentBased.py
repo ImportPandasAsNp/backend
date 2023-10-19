@@ -16,4 +16,4 @@ def recommendBasedOnName(userName, queryDict):
     if len(idList)==0:
         return []
     
-    return recommendBasedOnID(idList[0], queryDict)
+    return recommendBasedOnId(idList[0], queryDict)

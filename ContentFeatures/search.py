@@ -68,7 +68,6 @@ def getFeature(id):
 
     res = client.search(index = indexName,body=query)
 
-    print("search_aditya", res['hits']['total'])
     if res['hits']['total']['value'] > 0:
         return res['hits']['hits'][0]['_source']['feature']
     
