@@ -2,3 +2,4 @@
 /.env
 /hackon-backend
 /*/__pycache__
+/app.py

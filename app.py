@@ -15,7 +15,8 @@ from UserMetadata import service as UserMetadataService
 from UserHistory import service as UserHistoryService
 
 
-from Recommendation.reranking import getFinalRecommendationsWithId
+from Recommendation.reranking import getFinalRecommendationsWithId, getFinalRecommendationsWithName
+from Recommendation.filtered import *
 
 load_dotenv()
 app = FastAPI()
@@ -30,7 +31,7 @@ async def ping(authorization: str = Header(None)):
     return {"message":"Server is Live"}
 
 class Auth(BaseModel):
-    name: str | None = None
+    name: str
     email: str
     password: str
 
@@ -41,9 +42,9 @@ class WatchHistory(BaseModel):
     # rating: float
 
 class UserProfile(BaseModel):
-    name: str | None = None
-    age_filter: str | None = None
-    country: str | None = None    
+    name: str
+    age_filter: str
+    country: str    
     genre: List[str]
 
 @app.post("/auth/signup")
@@ -121,35 +122,35 @@ async def ping(query: str) -> []:
     
     print(req)
 
-    res = ContentMetadataService.getMetadataWithArguments(req)
+    res = filterQuery('123456',req)
     return res
 
 
-# @app.post("/recommend")
-# async def ping(request: Request):
-#     request =  await request.body()
-#     request = json.loads(request.decode())
-#     movieName = request["name"]
-#     queryDict = None
-    
-#     if 'query' in request:
-#         queryDict = request['query']
-
-#     res = ContentFeatureService.getKNNMetadataWithContentName(movieName, queryDict)
-#     return res
-
 @app.post("/recommend")
-async def ping(query: Request, authorization: str = Header(None)):
-    if not authorization:
-        return Response(content='{"message": "user not authenticated"}', status_code=403, media_type='application/json')
-    token = authorization.split(' ')[1]
-    # token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiTHY2YVJvc0JHWkJrWnJhVmJ5bGEifQ.zFGj-07jTAwF74fI0Fqcs6B1RJOyvaBdGKrVyTFiyn8"
-    user_id = UserMetadataService.getUserIdFromToken(token)
-
-    request =  await query.body()
+async def ping(request: Request):
+    request =  await request.body()
     request = json.loads(request.decode())
+    userId = request["id"]
+    queryDict = None
     
-    return getFinalRecommendationsWithId(user_id, queryDict=request)
+    if 'query' in request:
+        queryDict = request['query']
+
+    res = getFinalRecommendationsWithName(userId, queryDict)
+    return res
+
+# @app.post("/recommend")
+# async def ping(query: Request, authorization: str = Header(None)):
+#     # if not authorization:
+#     #     return Response(content='{"message": "user not authenticated"}', status_code=403, media_type='application/json')
+#     # token = authorization.split(' ')[1]
+#     token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiTHY2YVJvc0JHWkJrWnJhVmJ5bGEifQ.zFGj-07jTAwF74fI0Fqcs6B1RJOyvaBdGKrVyTFiyn8"
+#     user_id = UserMetadataService.getUserIdFromToken(token)
+
+#     request =  await query.body()
+#     request = json.loads(request.decode())
+    
+#     return getFinalRecommendationsWithId(user_id, queryDict=request)
 
 
 if __name__ == "__main__":

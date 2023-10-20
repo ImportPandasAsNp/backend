@@ -1,7 +1,7 @@
-from Utils.api import createIndex,createMapping,createSetting,closeIndex,openIndex,deleteIndex,insertRecord,getAllRecords,deleteAllRecords,getRecord
+from Utils.api import createIndex,createMapping,createSetting,closeIndex,openIndex,deleteIndex,insertRecord,getAllRecords,deleteAllRecords,getRecord,bulkUpload
 from UserFeatures.mapping import featureMapping,featureSetting,indexName as featureIndex
 from UserMetadata.mapping import metadataMapping,indexName as metadataIndex, dummyUser,dummyUser1
-from ContentFeatures.service import getFeaturesWithContentName,getFeaturesWithId as feat
+from ContentFeatures.service import getFeaturesWithContentName,getFeaturesWithId as feat,getKNNMetadataWithContentName
 from UserFeatures.service import getNearestUsersWithUserName,getNearestUsersWithId,getFeaturesWithId
 from UserHistory.mapping import historyMapping, indexName as historyIndex
 from UserHistory.update import updateHistory, updateUserFeature
@@ -10,9 +10,20 @@ from ContentMetadata.service import getMetadataWithIds as movie
 from Recommendation.collaborative import recommendBasedOnId as collabId
 from Recommendation.reranking import getFinalRecommendationsWithId, getFinalRecommendationsWithName
 from UserHistory.service import getHistoryFromNames,getHistoryFromIds
+from Recommendation.filtered import *
+import pandas as pd
+
 
 
 if __name__ == "__main__":
+    # deleteAllRecords(historyIndex)
+    # deleteAllRecords(featureIndex)
+    # print(featureIndex)
+    # createIndex(featureIndex)
+    # closeIndex(featureIndex)
+    # createSetting(featureIndex,featureSetting)
+    # openIndex(featureIndex)
+    # createMapping(featureIndex,featureMapping)
     # deleteAllRecords(historyIndex)
     # deleteIndex(historyIndex)
     # createIndex(historyIndex)
@@ -30,10 +41,22 @@ if __name__ == "__main__":
     # print(recommendBasedOnId('123456',{
     #     'country':'United States'
     # }))
-    # print(movie(['13644510926972048555']))
-    # updateHistory('123456',['220565352928732451','2'])
+    print(movie(['13644510926972048555']))
+    # print(getAllRecords(historyIndex))
+    # updateHistory('123456',['13644510926972048555','2'])
     # print(getAllRecords("user_metadata",size=3))
     # print(collabId('123456'))
     # print(feat('13644510926972048555'))
     # print(movie(['220565352928732451']))
-    print(getFinalRecommendationsWithId('123456'))
+    # print(recommendBasedOnId('123456'))
+    # print(getAllRecords("user_metadata",size=10))
+    print(filterQuery('123456',{
+        'director':'julia'
+    }))
+    # print(getKNNMetadataWithContentName('the prom',{
+
+    # }))
+
+    # data = pd.read_csv("/Users/adityaganguly/college/Hackon/backend/feats2.csv")
+    # bulkUpload(movieFeat,data)
+    # print(getAllRecords(movieFeat))

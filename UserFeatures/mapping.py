@@ -1,11 +1,11 @@
-indexName = "user_features"
+indexName = "user_featuresnew"
 
 featureMapping = {
     "properties":{
         "id": {"type": "text"},
         "feature":{
             "type":"knn_vector",
-            "dimension":384,
+            "dimension":512,
             "similarity":"cosinesimil"
         }
     }

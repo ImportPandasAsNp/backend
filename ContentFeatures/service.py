@@ -8,7 +8,6 @@ def getKNNMetadataWithFeature(feat,queryDict=None,returnFeatures = False):
     }
 
     if queryDict is not None:
-        print("Here")
         filterIds = service.getIdsWithArguments(queryDict)
         knnDict['ids'] = filterIds
     
@@ -24,6 +23,7 @@ def getKNNMetadataWithFeature(feat,queryDict=None,returnFeatures = False):
             
             for data in metadata:
                 data['feature'] = id2feat[data["_id"]]
+
         return metadata
 
     else:

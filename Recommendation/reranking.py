@@ -1,5 +1,5 @@
-from Recommendation.Collaborative import recommendBasedOnId as collabId
-from Recommendation.ContentBased import recommendBasedOnId as contentId
+from Recommendation.collaborative import recommendBasedOnId as collabId
+from Recommendation.contentbased import recommendBasedOnId as contentId
 from ContentFeatures.service import getFeaturesWithId as getContentFeaturesWithId
 from UserFeatures.service import getFeaturesWithId as getUserFeaturesWithId
 from UserMetadata.service import getIdsWithArguments
@@ -8,6 +8,10 @@ import numpy as np
 def dotProduct(vector1, vector2):
     return np.dot(vector1, vector2)
 
+def reranking(userFeature, movieContent):
+    movieContent = sorted(movieContent, key=lambda x:dotProduct(userFeature,x['feature']),reverse=True)
+    return movieContent
+
 def getFinalRecommendationsWithId(id, queryDict=None):
     contentBased = contentId(id, queryDict,returnFeatures=True)
     collabBased = collabId(id,returnFeatures=True)
@@ -15,7 +19,7 @@ def getFinalRecommendationsWithId(id, queryDict=None):
 
     contentBased.extend(collabBased)
 
-    contentBased = sorted(contentBased, key = lambda x:dotProduct(userFeatures, x['feature']),reverse=True)
+    contentBased = reranking(userFeatures,contentBased)
 
     for data in contentBased:
         del data['feature']

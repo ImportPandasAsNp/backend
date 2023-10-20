@@ -1,4 +1,7 @@
 from es import esclient
+import pandas as pd
+from elasticsearch import helpers
+import json
 client = esclient.getClient()
 
 def createIndex(indexName):
@@ -60,7 +63,35 @@ def deleteAllRecords(indexName):
   return res
 
 def insertRecord(indexName, record):
-    return client.index(index=indexName, doc_type="_doc", body = record)
+    return client.index(index=indexName, doc_type="_doc", id = record["id"],body = record)
 
 def updateRecord(indexName, id, record):
     return client.update(index = indexName, id=id, body={"doc": record})
+
+def bulkUpload(indexName, data, saveSize=50):
+
+    actions = []
+
+    for index,row in data.iterrows():
+        # print(len(json.loads(row['feature'])))
+        row['feature'] = json.loads(row['feature'])
+        source = {
+                    'feature':row['feature'],
+                    'id':row['id']
+                    }
+                    
+        action = {
+                    '_index': indexName,
+                    '_op_type': 'index',
+                    '_id': row['id'],
+                    '_source': source
+                    }
+        
+        actions.append(action)
+
+        if len(actions) >= saveSize:
+            helpers.bulk(client, actions)
+            del actions[0:len(actions)]
+
+    if len(actions) > 0:
+        helpers.bulk(client, actions)

@@ -1,5 +1,5 @@
 from UserHistory.mapping import indexName as historyIndex
-
+import elasticsearch
 from Utils.api import getRecord,updateRecord,insertRecord
 from ContentFeatures.service import getFeaturesWithId as getMovieFeaturesWithId
 from UserFeatures.service import getFeaturesWithId as getUserFeaturesWithId
@@ -21,16 +21,23 @@ def updateHistory(id, dataElement):
     try:
         record = getRecord(historyIndex,id)
 
-    except Exception:
+    except elasticsearch.exceptions.NotFoundError:
         insertRecord(historyIndex,{
             "id":id,
-            "history":[dataElement]
+            "history":dataElement
         })
+        movieFeatures = getMovieFeaturesWithId(dataElement[0])
+        insertRecord(featureIndex,{
+            "id":id,
+            "feature":movieFeatures
+        })
+
+        return
 
     
     data= record["_source"]
     data['history'].append(dataElement)
-    updateRecord(historyIndex, data)
+    updateRecord(historyIndex, data["id"],data)
 
     updateUserFeature(id,dataElement)
 
@@ -50,7 +57,7 @@ def updateUserFeature(id,dataElement):
         "feature":updatedFeat
     }
 
-    updateRecord(featureIndex, record)
+    updateRecord(featureIndex, record["id"], record)
 
 
 
