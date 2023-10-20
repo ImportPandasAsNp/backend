@@ -50,7 +50,7 @@ def updateUserFeature(id,dataElement):
     if len(moviefeat)==0 or len(userFeat)==0:
         return
     
-    updatedFeat = add(userFeat,moviefeat,0.9)
+    updatedFeat = add(moviefeat,userFeat,0.9)
     
     record = {
         "id":id,

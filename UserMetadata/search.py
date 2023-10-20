@@ -42,7 +42,7 @@ class QueryBuilder:
         return self.query
 
     def execute(self):
-        res = client.search(index=indexName, body=self.query,size=1000)
+        res = client.search(index=indexName, body=self.query,size=5000)
         return res
    
 

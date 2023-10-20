@@ -3,10 +3,11 @@ from Recommendation.contentbased import recommendBasedOnId as contentId
 from ContentFeatures.service import getFeaturesWithId as getContentFeaturesWithId
 from UserFeatures.service import getFeaturesWithId as getUserFeaturesWithId
 from UserMetadata.service import getIdsWithArguments
+from numpy.linalg import norm
 import numpy as np
 
 def dotProduct(vector1, vector2):
-    return np.dot(vector1, vector2)
+    return np.dot(vector1, vector2)/(norm(vector1)*norm(vector2))
 
 def reranking(userFeature, movieContent):
     movieContent = sorted(movieContent, key=lambda x:dotProduct(userFeature,x['feature']),reverse=True)

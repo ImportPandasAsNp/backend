@@ -41,18 +41,18 @@ if __name__ == "__main__":
     # print(recommendBasedOnId('123456',{
     #     'country':'United States'
     # }))
-    print(movie(['13644510926972048555']))
+    # print(movie(['13644510926972048555']))
     # print(getAllRecords(historyIndex))
     # updateHistory('123456',['13644510926972048555','2'])
     # print(getAllRecords("user_metadata",size=3))
     # print(collabId('123456'))
     # print(feat('13644510926972048555'))
     # print(movie(['220565352928732451']))
-    # print(recommendBasedOnId('123456'))
+    print(recommendBasedOnId('123456'))
     # print(getAllRecords("user_metadata",size=10))
-    print(filterQuery('123456',{
-        'director':'julia'
-    }))
+    # print(filterQuery('123456',{
+    #     'country':'united states'
+    # }))
     # print(getKNNMetadataWithContentName('the prom',{
 
     # }))
