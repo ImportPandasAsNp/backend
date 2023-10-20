@@ -16,6 +16,10 @@ import pandas as pd
 
 
 if __name__ == "__main__":
+    print(getKNNMetadataWithContentName('in the dark',{
+        "rating":"U"
+    }))
+    # print(getAllRecords("moviemetadata"))
     # deleteAllRecords(historyIndex)
     # deleteAllRecords(featureIndex)
     # print(featureIndex)
@@ -39,7 +43,7 @@ if __name__ == "__main__":
     # time.sleep(2)
     # print(getFeaturesWithId('123456')[0])
     # print(recommendBasedOnId('123456',{
-    #     'country':'United States'
+    #     'country':'india'
     # }))
     # print(movie(['13644510926972048555']))
     # print(getAllRecords(historyIndex))
@@ -48,10 +52,10 @@ if __name__ == "__main__":
     # print(collabId('123456'))
     # print(feat('13644510926972048555'))
     # print(movie(['220565352928732451']))
-    print(recommendBasedOnId('123456'))
+    # print(recommendBasedOnId('234567'))
     # print(getAllRecords("user_metadata",size=10))
-    # print(filterQuery('123456',{
-    #     'country':'united states'
+    # print(filterQuery('234567',{
+    #     'cast':['samuel l jackson','will']
     # }))
     # print(getKNNMetadataWithContentName('the prom',{
 

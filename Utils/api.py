@@ -68,6 +68,7 @@ def insertRecord(indexName, record):
 def updateRecord(indexName, id, record):
     return client.update(index = indexName, id=id, body={"doc": record})
 
+#data is a pd dataframe
 def bulkUpload(indexName, data, saveSize=50):
 
     actions = []

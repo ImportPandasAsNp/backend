@@ -13,6 +13,7 @@ def reranking(userFeature, movieContent):
     movieContent = sorted(movieContent, key=lambda x:dotProduct(userFeature,x['feature']),reverse=True)
     return movieContent
 
+#merge content based and collab based and rerank
 def getFinalRecommendationsWithId(id, queryDict=None):
     contentBased = contentId(id, queryDict,returnFeatures=True)
     collabBased = collabId(id,returnFeatures=True)

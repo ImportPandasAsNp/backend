@@ -22,7 +22,10 @@ def getMetadataWithArguments(argDict):
     builder = QueryBuilder.builder()
 
     for key in argDict.keys():
-        builder.addQuery(key, argDict[key])
+        if key!="rating":
+            builder.addQuery(key, argDict[key])
+        else:
+            builder.addRatingQuery(argDict["rating"])
 
     if len(argDict.keys()) > 0:
         res = builder.execute()
