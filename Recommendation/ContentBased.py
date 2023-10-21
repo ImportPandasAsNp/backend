@@ -4,6 +4,9 @@ from UserMetadata.service import getIdsWithArguments as getUserIdsWithArguments
 
 def recommendBasedOnId(userId, queryDict = None, returnFeatures=False):
     feat = getUserFeaturesWithId(userId)
+
+    if feat==[]:
+        return []
     movies = getKNNMetadataWithFeature(feat, queryDict,returnFeatures)
 
     return movies

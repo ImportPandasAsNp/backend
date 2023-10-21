@@ -16,9 +16,9 @@ import pandas as pd
 
 
 if __name__ == "__main__":
-    print(getKNNMetadataWithContentName('in the dark',{
-        "rating":"U"
-    }))
+    # print(getKNNMetadataWithContentName('in the dark',{
+    #     "rating":"U"
+    # }))
     # print(getAllRecords("moviemetadata"))
     # deleteAllRecords(historyIndex)
     # deleteAllRecords(featureIndex)
@@ -64,3 +64,10 @@ if __name__ == "__main__":
     # data = pd.read_csv("/Users/adityaganguly/college/Hackon/backend/feats2.csv")
     # bulkUpload(movieFeat,data)
     # print(getAllRecords(movieFeat))
+    # print(getHistoryFromIds(['Pv5hTosBGZBkZraVWyk8']))
+    # deleteAllRecords(historyIndex)
+    # print(getAllRecords(historyIndex))
+    print(getMostFrequent('Pv5hTosBGZBkZraVWyk8','genre'))
+    # print(getMetadataWithArguments({
+    #     'director':'chris mckay'
+    # }))

@@ -2,6 +2,7 @@ import os
 import openai
 import requests
 from fastapi import FastAPI, Response, Request, Header
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
 import uvicorn
@@ -20,6 +21,19 @@ from Recommendation.filtered import *
 
 load_dotenv()
 app = FastAPI()
+
+origins = [ 
+     "http://localhost", 
+     "http://localhost:3000", 
+ ] 
+app.add_middleware( 
+     CORSMiddleware, 
+     allow_origins=origins, 
+     allow_credentials=True, 
+     allow_methods=["*"], 
+     allow_headers=["*"], 
+ )
+
 esclient.getClient()
 # print(es.ping)
 openai.api_key=os.getenv("open_ai_api_key")
@@ -49,6 +63,7 @@ class UserProfile(BaseModel):
 
 @app.post("/auth/signup")
 async def ping(req: Auth):
+    print(req)
     res = UserMetadataService.createUser(req.name, req.email, req.password)
     return res
 
@@ -87,8 +102,44 @@ async def ping(req: WatchHistory, authorization: str = Header(None)):
     return res
 
 
+@app.post("/recommend/mostfrequent/{key}")
+async def ping(key,authorization: str = Header(None)):
+    if not authorization:
+        return Response(content='{"message": "user not authenticated"}', status_code=403, media_type='application/json')
+    token = authorization.split(' ')[1]
+    # token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiTHY2YVJvc0JHWkJrWnJhVmJ5bGEifQ.zFGj-07jTAwF74fI0Fqcs6B1RJOyvaBdGKrVyTFiyn8"
+    user_id = UserMetadataService.getUserIdFromToken(token)
+
+    return getMostFrequent(user_id,key=key)
+
+@app.post("/recommend")
+async def ping(query: Request, authorization: str = Header(None)):
+    if not authorization:
+        return Response(content='{"message": "user not authenticated"}', status_code=403, media_type='application/json')
+    token = authorization.split(' ')[1]
+    #token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiTHY2YVJvc0JHWkJrWnJhVmJ5bGEifQ.zFGj-07jTAwF74fI0Fqcs6B1RJOyvaBdGKrVyTFiyn8"
+    user_id = UserMetadataService.getUserIdFromToken(token)
+
+    userMetadata = UserMetadataService.getMetadataWithIds([user_id])
+    print(userMetadata)
+    request =  await query.body()
+    request = json.loads(request.decode())
+    
+    if request is None:
+        request = dict()
+
+    request['genre'] = userMetadata[0]["_source"]["genre"]
+    # return userMetadata
+    return getFinalRecommendationsWithId(user_id, queryDict=request)
+
+
 @app.get("/search")
-async def ping(query: str) -> []:
+async def ping(query: str,authorization: str = Header(None)) -> []:
+    if not authorization:
+        return Response(content='{"message": "user not authenticated"}', status_code=403, media_type='application/json')
+    token = authorization.split(' ')[1]
+    #token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiTHY2YVJvc0JHWkJrWnJhVmJ5bGEifQ.zFGj-07jTAwF74fI0Fqcs6B1RJOyvaBdGKrVyTFiyn8"
+    user_id = UserMetadataService.getUserIdFromToken(token)
     req = [
         {
             "content": "You are a keyword extractor. Extract the director, cast, genre and title from the following text. Do not suggest any names on your own, or distort the names. Do not add any punctuation to the keywords. If you don't find a keyword fill it with unknown",
@@ -122,35 +173,23 @@ async def ping(query: str) -> []:
     
     print(req)
 
-    res = filterQuery('123456',req)
+    res = filterQuery(user_id,req)
     return res
 
-
-@app.post("/recommend")
-async def ping(request: Request):
-    request =  await request.body()
-    request = json.loads(request.decode())
-    userId = request["id"]
-    queryDict = None
-    
-    if 'query' in request:
-        queryDict = request['query']
-
-    res = getFinalRecommendationsWithName(userId, queryDict)
-    return res
 
 # @app.post("/recommend")
-# async def ping(query: Request, authorization: str = Header(None)):
-#     # if not authorization:
-#     #     return Response(content='{"message": "user not authenticated"}', status_code=403, media_type='application/json')
-#     # token = authorization.split(' ')[1]
-#     token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiTHY2YVJvc0JHWkJrWnJhVmJ5bGEifQ.zFGj-07jTAwF74fI0Fqcs6B1RJOyvaBdGKrVyTFiyn8"
-#     user_id = UserMetadataService.getUserIdFromToken(token)
-
-#     request =  await query.body()
+# async def ping(request: Request):
+#     request =  await request.body()
 #     request = json.loads(request.decode())
+#     userId = request["id"]
+#     queryDict = None
     
-#     return getFinalRecommendationsWithId(user_id, queryDict=request)
+#     if 'query' in request:
+#         queryDict = request['query']
+
+#     res = getFinalRecommendationsWithName(userId, queryDict)
+#     return res
+
 
 
 if __name__ == "__main__":

@@ -12,6 +12,7 @@ def getMetadataWithIds(idList):
     cast - Single name or list
     director - Single name or list
     genre - Single genre or list of genre
+    rating - A or U/A or U
 '''
 
 def getIdsWithArguments(argDict):

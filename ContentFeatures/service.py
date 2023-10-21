@@ -8,8 +8,11 @@ def getKNNMetadataWithFeature(feat,queryDict=None,returnFeatures = False):
     }
 
     if queryDict is not None:
-        filterIds = service.getIdsWithArguments(queryDict)
-        knnDict['ids'] = filterIds
+        if len(queryDict.keys())==1 and 'rating' in queryDict and queryDict['rating']=='A':
+            pass
+        else:
+            filterIds = service.getIdsWithArguments(queryDict)
+            knnDict['ids'] = filterIds
     
     res = knnQuery(knnDict)
     ids = getIdsFromResult(res)

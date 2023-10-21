@@ -63,7 +63,10 @@ def deleteAllRecords(indexName):
   return res
 
 def insertRecord(indexName, record):
-    return client.index(index=indexName, doc_type="_doc", id = record["id"],body = record)
+    if "id" in record:
+        return client.index(index=indexName, doc_type="_doc", id = record["id"],body = record)
+    else:
+        return client.index(index=indexName, doc_type="_doc",body = record)
 
 def updateRecord(indexName, id, record):
     return client.update(index = indexName, id=id, body={"doc": record})

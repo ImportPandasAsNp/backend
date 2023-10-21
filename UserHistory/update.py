@@ -24,7 +24,7 @@ def updateHistory(id, dataElement):
     except elasticsearch.exceptions.NotFoundError:
         insertRecord(historyIndex,{
             "id":id,
-            "history":dataElement
+            "history":[dataElement]
         })
         movieFeatures = getMovieFeaturesWithId(dataElement[0])
         insertRecord(featureIndex,{

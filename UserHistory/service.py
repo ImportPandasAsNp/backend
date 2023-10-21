@@ -56,3 +56,4 @@ def getHistoryFromNames(nameList):
 def updateUserHistory(id, data):
     updateHistory(id, data)
     updateUserFeature(id, data)
+
