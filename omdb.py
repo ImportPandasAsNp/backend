@@ -49,19 +49,21 @@ def main():
 
     for index,row in metadata.iterrows():
         if (row["country"]=="United States" or row["country"]=="India") and row["image_url"]=="url":
-            data = get_movie_info(remove_first_word_if_in_list(row["title"],wordlist))
+            # data = get_movie_info(remove_first_word_if_in_list(row["title"],wordlist))
 
-            if data is not None:
-                print(data)
-                if "image_url" in data:
-                    metadata.at[index,"image_url"] = data["image_url"]
+            # if data is not None:
+            #     print(data)
+            #     if "image_url" in data:
+            #         metadata.at[index,"image_url"] = data["image_url"]
                 
-                if "imdb_rating" in data:
-                    metadata.at[index,"imdb_rating"] = data["imdb_rating"]
+            #     if "imdb_rating" in data:
+            #         metadata.at[index,"imdb_rating"] = data["imdb_rating"]
 
-            else:
-                break
+            # else:
+            #     break
+            metadata.at[index,"image_url"]="https://occ-0-2365-2186.1.nflxso.net/dnm/api/v6/6gmvu2hxdfnQ55LZZjyzYR4kzGk/AAAABVXBb2OIJF5kpOGVZ5TNjIydKyVReN6qd6UC2BJGpHfU1KGl1eaCApGzqcdP6LzCYI1Vt2P8UYL2d7FTP4of0zggLAC7i8TlmTI.webp?r=841"
     metadata.to_csv('/Users/adityaganguly/college/Hackon/backend/finalmetadata.csv',index=False)
+    
 
     # for index,row in metadata.iterrows():
 

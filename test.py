@@ -7,6 +7,7 @@ from UserHistory.mapping import historyMapping, indexName as historyIndex
 from UserHistory.update import updateHistory, updateUserFeature
 from Recommendation.contentbased import recommendBasedOnId,recommendBasedOnName
 from ContentMetadata.service import getMetadataWithIds as movie
+from ContentMetadata.mapping import indexName as content,contentMapping
 from Recommendation.collaborative import recommendBasedOnId as collabId
 from Recommendation.reranking import getFinalRecommendationsWithId, getFinalRecommendationsWithName
 from UserHistory.service import getHistoryFromNames,getHistoryFromIds
@@ -67,7 +68,13 @@ if __name__ == "__main__":
     # print(getHistoryFromIds(['Pv5hTosBGZBkZraVWyk8']))
     # deleteAllRecords(historyIndex)
     # print(getAllRecords(historyIndex))
-    print(getMostFrequent('Pv5hTosBGZBkZraVWyk8','genre'))
+    # print(getMostFrequent('Pv5hTosBGZBkZraVWyk8','genre'))
     # print(getMetadataWithArguments({
     #     'director':'chris mckay'
     # }))
+    # print(content)
+    # deleteIndex(content)
+    # createIndex(content)
+    # createMapping(content,contentMapping)
+    # print(contentMapping)
+    print(getAllRecords(content))

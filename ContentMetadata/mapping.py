@@ -15,4 +15,4 @@ contentMapping = {
     }
 }
 
-indexName = "moviemetadata"
+indexName = "moviemetadata1"

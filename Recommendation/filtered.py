@@ -30,8 +30,15 @@ def getMostFrequent(id, key):
         element = history[his]
         movieIds.append(element[0])
 
-    movieIds = list(set(movieIds))
-    print(movieIds)
+    # movieIds = list(set(movieIds))
+    cntid = dict()
+
+    for id in movieIds:
+        if id not in cntid:
+            cntid[id]=1
+        else:
+            cntid[id]+=1
+
     contentMetadata = getMetadataWithIds(movieIds)
 
     keyDict = dict()
@@ -40,9 +47,9 @@ def getMostFrequent(id, key):
         splitted = metadata["_source"][key].split(',')
 
         if splitted[0] not in keyDict:
-            keyDict[splitted[0]]=1
+            keyDict[splitted[0]]=cntid[metadata["_id"]]
         else:
-            keyDict[splitted[0]]+=1
+            keyDict[splitted[0]]+=cntid[metadata["_id"]]
         # for dir in splitted:
         #     if dir not in keyDict:
         #         keyDict[dir]=1
