@@ -1,5 +1,5 @@
-from Recommendation.collaborative import recommendBasedOnId as collabId
-from Recommendation.contentbased import recommendBasedOnId as contentId
+from Recommendation.Collaborative import recommendBasedOnId as collabId
+from Recommendation.ContentBased import recommendBasedOnId as contentId
 from ContentFeatures.service import getFeaturesWithId as getContentFeaturesWithId
 from ContentMetadata.service import getMetadataWithArguments
 from UserFeatures.service import getFeaturesWithId as getUserFeaturesWithId
