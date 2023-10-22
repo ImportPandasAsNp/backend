@@ -97,7 +97,7 @@ async def ping(authorization: str = Header(None)):
     token = authorization.split(' ')[1]
     # token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiTHY2YVJvc0JHWkJrWnJhVmJ5bGEifQ.zFGj-07jTAwF74fI0Fqcs6B1RJOyvaBdGKrVyTFiyn8"
     user_id = UserMetadataService.getUserIdFromToken(token)
-    res = UserHistoryService.getHistoryFromId(user_id)
+    res = UserHistoryService.getContentMetadataHistoryFromId(user_id)
     return res
 
 

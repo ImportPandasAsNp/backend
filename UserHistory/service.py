@@ -3,6 +3,7 @@ from Utils.api import getRecord
 from UserMetadata.service import getIdsWithArguments
 from UserMetadata.mapping import indexName as userMetadataIndex
 from UserHistory.update import updateHistory, updateUserFeature
+from ContentMetadata.service import getMetadataWithIds
 from es import esclient
 
 client = esclient.getClient()
@@ -27,6 +28,19 @@ def getHistoryFromUserName(userName):
 
     return getHistoryFromId(ids[0])
 
+def getContentMetadataHistoryFromId(id):
+    history = getHistoryFromId(id)
+
+    contentIds = [his[0] for his in history]
+
+    idDict = dict()
+
+    for i in range(len(contentIds)):
+        idDict[contentIds[i]] = i
+
+    metadata = getMetadataWithIds(contentIds)
+    metadata.sort(key=lambda x:idDict[x["_id"]])
+    return metadata
 
 def getHistoryFromIds(idList):
     query = {
