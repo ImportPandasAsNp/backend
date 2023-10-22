@@ -16,7 +16,7 @@ def filterQuery(userId, queryDict):
     return movieData
 
 
-def getMostFrequent(id, key):
+def getMostFrequent(id, key,queryDict=None):
     history = getHistoryFromId(id)
     userFeature = getFeaturesWithId(id)
 
@@ -61,7 +61,8 @@ def getMostFrequent(id, key):
     maxKey = max(zip(keyDict.values(), keyDict.keys()))[1]
 
     filteredMetadata = getKNNMetadataWithFeature(userFeature,{
-        key:maxKey
+        key:maxKey,
+        'rating':queryDict['rating']
     })
 
     return {"key":maxKey,"data":filteredMetadata}

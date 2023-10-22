@@ -114,18 +114,20 @@ async def ping(req: WatchHistory, authorization: str = Header(None)):
 
 
 @app.post("/recommend/mostfrequent/{key}")
-async def ping(key, authorization: str = Header(None)):
+async def ping(key, request:Request,authorization: str = Header(None)):
     if not authorization:
         return Response(content='{"message": "user not authenticated"}', status_code=403, media_type='application/json')
     token = authorization.split(' ')[1]
+    request = await request.body()
+    request = json.loads(request.decode())
     # token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiTHY2YVJvc0JHWkJrWnJhVmJ5bGEifQ.zFGj-07jTAwF74fI0Fqcs6B1RJOyvaBdGKrVyTFiyn8"
     user_id = UserMetadataService.getUserIdFromToken(token)
-
-    return getMostFrequent(user_id, key=key)
+    print(request)
+    return getMostFrequent(user_id, key,request)
 
 
 @app.post("/recommend")
-async def ping(query: Request, authorization: str = Header(None)):
+async def ping(query: Request,authorization: str = Header(None)):
     if not authorization:
         return Response(content='{"message": "user not authenticated"}', status_code=403, media_type='application/json')
     token = authorization.split(' ')[1]
@@ -133,7 +135,7 @@ async def ping(query: Request, authorization: str = Header(None)):
     user_id = UserMetadataService.getUserIdFromToken(token)
 
     userMetadata = UserMetadataService.getMetadataWithIds([user_id])
-    print(userMetadata)
+
     request = await query.body()
     request = json.loads(request.decode())
 
@@ -141,16 +143,22 @@ async def ping(query: Request, authorization: str = Header(None)):
         request = dict()
 
     request['genre'] = userMetadata[0]["_source"]["genre"]
+    
     # return userMetadata
+    print(request)
     return getFinalRecommendationsWithId(user_id, queryDict=request)
 
 
-@app.get("/search")
-async def ping(query: str, authorization: str = Header(None)) -> []:
+@app.post("/search")
+async def ping(query: str,request:Request, authorization: str = Header(None)) -> []:
     print(query)
     if not authorization:
         return Response(content='{"message": "user not authenticated"}', status_code=403, media_type='application/json')
     token = authorization.split(' ')[1]
+
+    request = await request.body()
+    request = json.loads(request.decode())
+
     #token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiTHY2YVJvc0JHWkJrWnJhVmJ5bGEifQ.zFGj-07jTAwF74fI0Fqcs6B1RJOyvaBdGKrVyTFiyn8"
     user_id = UserMetadataService.getUserIdFromToken(token)
     req = [
@@ -184,6 +192,7 @@ async def ping(query: str, authorization: str = Header(None)) -> []:
 
         req.setdefault(tmp[0].strip(), val)
 
+    req['rating'] = request['rating']
     print(req)
 
     res = filterQuery(user_id, req)

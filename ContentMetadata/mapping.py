@@ -11,7 +11,8 @@ contentMapping = {
         "genre": {"type": "text"},
         "platform": {"type": "keyword"},
         "id": {"type": "text"},
-        "image_url":{"type":"text"}
+        "image_url":{"type":"text"},
+        "description":{"type":"text"}
     }
 }
 

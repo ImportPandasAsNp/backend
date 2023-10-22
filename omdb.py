@@ -22,6 +22,44 @@ def remove_first_word_if_in_list(input_string, word_list):
     
     return updated_string
 
+TMDB_API_KEY = 'a45d406e049179c48005a841d4d245f9'
+TMDB_BASE_URL = 'https://api.themoviedb.org/3'
+
+# Function to fetch movie information by name
+def fetch_movie_info_by_name(movie_name):
+    try:
+        # Make a search request for the movie by name
+        search_params = {
+            'api_key': TMDB_API_KEY,
+            'query': movie_name
+        }
+        search_response = requests.get(f'{TMDB_BASE_URL}/search/movie', params=search_params)
+
+        search_data = search_response.json()
+
+        if search_data['results']:
+            # Assuming the first result is the desired movie
+            movie = search_data['results'][0]
+
+            # Extract details like title, overview, and poster_path
+            title = movie['title']
+            overview = movie['overview']
+            poster_path = movie['poster_path']
+
+            # Construct the full poster URL
+            poster_url = f'https://image.tmdb.org/t/p/w500{poster_path}'
+
+            return {
+                'title': title,
+                'overview': overview,
+                'poster_url': poster_url
+            }
+        else:
+            return None  # Movie not found
+    except Exception as e:
+        print(f'Error fetching movie info: {e}')
+        raise
+
 def get_movie_info(movie_title):
     api_key = "37400cfc"  # Replace with your OMDB API key
     omdb_url = f"http://www.omdbapi.com/?apikey={api_key}&t={movie_title}"
@@ -46,22 +84,37 @@ def get_movie_info(movie_title):
     
 def main():
     metadata = pd.read_csv('/Users/adityaganguly/college/Hackon/backend/finalmetadata.csv')
+    temp = pd.read_csv('/Users/adityaganguly/college/Hackon/backend/temp.csv')
+
+    metadata["description"] = ["t" for _ in range(len(metadata))]
+    idPlatform = dict()
+    idTitle = dict()
+    idDescription=dict()
+
+    idPlatform = dict(zip(temp["id"],temp["platform"]))
+    idTitle = dict(zip(temp["id"],temp["title"]))
+    idDescription = dict(zip(temp["id"],temp["description"]))
 
     for index,row in metadata.iterrows():
-        if (row["country"]=="United States" or row["country"]=="India") and row["image_url"]=="url":
-            # data = get_movie_info(remove_first_word_if_in_list(row["title"],wordlist))
+        # if (row["country"]=="United States" or row["country"]=="India") and row["image_url"]=="https://occ-0-2365-2186.1.nflxso.net/dnm/api/v6/6gmvu2hxdfnQ55LZZjyzYR4kzGk/AAAABVXBb2OIJF5kpOGVZ5TNjIydKyVReN6qd6UC2BJGpHfU1KGl1eaCApGzqcdP6LzCYI1Vt2P8UYL2d7FTP4of0zggLAC7i8TlmTI.webp?r=841":
+        # #     data = fetch_movie_info_by_name(remove_first_word_if_in_list(row["title"],wordlist))
 
-            # if data is not None:
-            #     print(data)
-            #     if "image_url" in data:
-            #         metadata.at[index,"image_url"] = data["image_url"]
+        # #     if data is not None:
+        # #         print(data)
+        # #         if "poster_url" in data:
+        # #             metadata.at[index,"image_url"] = data["poster_url"]
+        # #             print(data["poster_url"])
                 
-            #     if "imdb_rating" in data:
-            #         metadata.at[index,"imdb_rating"] = data["imdb_rating"]
+        # #         if "imdb_rating" in data:
+        # #             metadata.at[index,"imdb_rating"] = data["imdb_rating"]
+        #     cnt+=1
+        #     indices.append(index)
+        metadata.at[index,"platform"] = idPlatform[row["id"]]
+        metadata.at[index,"title"] = idTitle[row["id"]]
+        metadata.at[index,"description"]=idDescription[row["id"]]
 
-            # else:
-            #     break
-            metadata.at[index,"image_url"]="https://occ-0-2365-2186.1.nflxso.net/dnm/api/v6/6gmvu2hxdfnQ55LZZjyzYR4kzGk/AAAABVXBb2OIJF5kpOGVZ5TNjIydKyVReN6qd6UC2BJGpHfU1KGl1eaCApGzqcdP6LzCYI1Vt2P8UYL2d7FTP4of0zggLAC7i8TlmTI.webp?r=841"
+
+    # metadata.drop(metadata.index[indices],inplace=True)
     metadata.to_csv('/Users/adityaganguly/college/Hackon/backend/finalmetadata.csv',index=False)
     
 

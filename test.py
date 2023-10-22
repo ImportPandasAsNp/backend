@@ -77,4 +77,6 @@ if __name__ == "__main__":
     # createIndex(content)
     # createMapping(content,contentMapping)
     # print(contentMapping)
+    # createIndex(content)
+    # createMapping(content,contentMapping)
     print(getAllRecords(content))
