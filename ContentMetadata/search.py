@@ -50,6 +50,7 @@ class QueryBuilder:
 
     def addPlatformsQuery(self,platformList):
         if len(platformList)<len(PLATFORMS):
+            print(platformList)
             self.query['query']['bool']["must"].append({
                 "terms":{
                     "platform":platformList

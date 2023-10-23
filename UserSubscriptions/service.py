@@ -5,17 +5,23 @@ from UserMetadata.mapping import indexName as userMetadataIndex
 from UserSubscriptions.update import updateSubscriptions
 from ContentMetadata.service import getMetadataWithIds
 from es import esclient
+import elasticsearch
 
 client = esclient.getClient()
 
 def getSubscriptionsFromId(id):
-    data = getRecord(subscriptionIndex,id)
 
-    if len(data.keys())==0:
+    try:
+        data = getRecord(subscriptionIndex,id)
+
+        if len(data.keys())==0:
+            return []
+        
+        else:
+            return data['_source']['subscriptions']
+        
+    except elasticsearch.exceptions.NotFoundError:
         return []
-    
-    else:
-        return data['_source']['subscriptions']
     
 def updateUserSubscriptions(id, data):
     updateSubscriptions(id,data)

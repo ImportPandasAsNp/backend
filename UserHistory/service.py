@@ -9,13 +9,17 @@ from es import esclient
 client = esclient.getClient()
 
 def getHistoryFromId(id):
-    data = getRecord(historyIndex,id)
 
-    if len(data.keys())==0:
+    try:
+        data = getRecord(historyIndex,id)
+
+        if len(data.keys())==0:
+            return []
+        
+        else:
+            return data['_source']['history']
+    except:
         return []
-    
-    else:
-        return data['_source']['history']
     
 def getHistoryFromUserName(userName):
     ids = getIdsWithArguments({

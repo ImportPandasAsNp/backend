@@ -18,11 +18,12 @@ def reranking(userFeature, movieContent):
 #merge content based and collab based and rerank
 def getFinalRecommendationsWithId(id, queryDict=None):
     userFeatures = getUserFeaturesWithId(id)
-
     
-    if len(userFeatures)==0 and "genre" in queryDict:
+    if len(userFeatures)==0:
         movieData = getMetadataWithArguments({
-            "genre":queryDict["genre"]
+            "genre":queryDict["genre"],
+            "rating":queryDict["rating"],
+            "subscribed_platforms":queryDict["subscribed_platforms"]
         })
 
         return random.sample(movieData,k=20)
@@ -32,7 +33,7 @@ def getFinalRecommendationsWithId(id, queryDict=None):
 
     if queryDict=={}:
         queryDict=None
-        
+    
     contentBased = contentId(id, queryDict,returnFeatures=True)
     collabBased = collabId(id,returnFeatures=True)
     contentBased.extend(collabBased)

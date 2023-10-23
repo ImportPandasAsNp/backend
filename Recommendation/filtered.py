@@ -65,7 +65,8 @@ def getMostFrequent(id, key,queryDict=None):
 
     filteredMetadata = getKNNMetadataWithFeature(userFeature,{
         key:maxKey,
-        'rating':queryDict['rating']
+        'rating':queryDict['rating'],
+        "subscribed_platforms":queryDict["subscribed_platforms"]
     })
 
     return {"key":maxKey,"data":filteredMetadata}
