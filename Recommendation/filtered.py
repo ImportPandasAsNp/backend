@@ -30,6 +30,9 @@ def filterQueryWithFeatures(userId,feat,queryDict):
     if len(userFeatures)>0:
         movieData = reranking(userFeatures,movieData)
 
+    else:
+        movieData = reranking(feat, movieData)
+
     for data in movieData:
         del data['feature']
 
