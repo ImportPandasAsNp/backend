@@ -15,7 +15,7 @@ def knnQuery(args):
 
     if 'ids' in args:
         query= {
-            'size':11,
+            'size':20,
             'query':{
                 'script_score':{
                     'query':{
@@ -46,7 +46,7 @@ def knnQuery(args):
                 "knn":{
                     'feature':{
                         'vector':args['feature'],
-                        'k':10
+                        'k':20
                     }
                 }
             }

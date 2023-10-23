@@ -17,6 +17,7 @@ def reranking(userFeature, movieContent):
 
 #merge content based and collab based and rerank
 def getFinalRecommendationsWithId(id, queryDict=None):
+    print(queryDict)
     userFeatures = getUserFeaturesWithId(id)
     
     if len(userFeatures)==0:
@@ -35,7 +36,7 @@ def getFinalRecommendationsWithId(id, queryDict=None):
         queryDict=None
     
     contentBased = contentId(id, queryDict,returnFeatures=True)
-    collabBased = collabId(id,returnFeatures=True)
+    collabBased = collabId(id,queryDict,returnFeatures=True)
     contentBased.extend(collabBased)
 
     contentBased = reranking(userFeatures,contentBased)
@@ -48,10 +49,10 @@ def getFinalRecommendationsWithId(id, queryDict=None):
 
     contentBased.pop(0)
 
-    if len(contentBased)<10:
+    if len(contentBased)<20:
         return contentBased
     
-    return contentBased[0:10]
+    return contentBased[0:20]
 
 def getFinalRecommendationsWithName(userName, queryDict=None):
     idList = getIdsWithArguments({
