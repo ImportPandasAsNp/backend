@@ -39,11 +39,17 @@ def getFinalRecommendationsWithId(id, queryDict=None):
 
     contentBased = reranking(userFeatures,contentBased)
 
+    if len(contentBased)==0:
+        return []
+
     for data in contentBased:
         del data['feature']
 
+    contentBased.pop(0)
+
     if len(contentBased)<10:
         return contentBased
+    
     return contentBased[0:10]
 
 def getFinalRecommendationsWithName(userName, queryDict=None):

@@ -1,0 +1,1 @@
+PLATFORMS = ["netflix", "hotstar", "prime"]

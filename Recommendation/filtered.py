@@ -3,6 +3,9 @@ from UserFeatures.service import getFeaturesWithId
 from Recommendation.reranking import reranking
 from UserHistory.service import getHistoryFromId
 from ContentMetadata.service import getMetadataWithIds,getMetadataWithArguments
+from UserSubscriptions.service import getSubscriptionsFromId
+from Utils.constants import PLATFORMS
+import random
 
 #filter on user preferences and rerank
 def filterQuery(userId, queryDict):
@@ -66,3 +69,48 @@ def getMostFrequent(id, key,queryDict=None):
     })
 
     return {"key":maxKey,"data":filteredMetadata}
+
+
+def recommendOtherPlatforms(id, queryDict=None):
+    subs = getSubscriptionsFromId(id)
+
+    if queryDict is None:
+        queryDict = dict()
+
+    if "rating" not in queryDict:
+        queryDict["rating"]="A"
+
+    userFeatures = getFeaturesWithId(id)
+    otherPlatforms = [p for p in PLATFORMS if p not in subs]
+    movieData = []
+
+    if len(userFeatures)==0 and "genre" in queryDict:
+        print("Here")
+        for p in otherPlatforms:
+            movieData.extend(getMetadataWithArguments({
+                "genre":queryDict["genre"],
+                "platform":p,
+                "rating":queryDict["rating"]
+            }))
+
+        return random.sample(movieData,k=20)
+
+    else:
+        del queryDict['genre']
+
+    
+    for p in otherPlatforms:
+        movieData.extend(getKNNMetadataWithFeature(userFeatures,{
+            "platform":p,
+            "rating":queryDict["rating"]
+        },returnFeatures=True))
+
+    movieData = reranking(userFeatures,movieData)
+
+    for data in movieData:
+        del data['feature']
+
+    return movieData[0:min(len(movieData),20)]
+
+
+

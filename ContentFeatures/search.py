@@ -15,7 +15,7 @@ def knnQuery(args):
 
     if 'ids' in args:
         query= {
-            'size':10,
+            'size':11,
             'query':{
                 'script_score':{
                     'query':{

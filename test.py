@@ -5,14 +5,16 @@ from ContentFeatures.service import getFeaturesWithContentName,getFeaturesWithId
 from UserFeatures.service import getNearestUsersWithUserName,getNearestUsersWithId,getFeaturesWithId
 from UserHistory.mapping import historyMapping, indexName as historyIndex
 from UserHistory.update import updateHistory, updateUserFeature
-from Recommendation.contentbased import recommendBasedOnId,recommendBasedOnName
+from Recommendation.ContentBased import recommendBasedOnId,recommendBasedOnName
 from ContentMetadata.service import getMetadataWithIds as movie
 from ContentMetadata.mapping import indexName as content,contentMapping
-from Recommendation.collaborative import recommendBasedOnId as collabId
+from Recommendation.Collaborative import recommendBasedOnId as collabId
 from Recommendation.reranking import getFinalRecommendationsWithId, getFinalRecommendationsWithName
 from UserHistory.service import getHistoryFromNames,getHistoryFromIds
 from Recommendation.filtered import *
 import pandas as pd
+from UserSubscriptions.mapping import subscriptionMapping,indexName as subscriptionIndex
+from UserSubscriptions.service import updateUserSubscriptions
 
 
 
@@ -79,4 +81,11 @@ if __name__ == "__main__":
     # print(contentMapping)
     # createIndex(content)
     # createMapping(content,contentMapping)
-    print(getAllRecords(content))
+    # print(getAllRecords(content))
+    # createIndex(subscriptionIndex)
+    deleteAllRecords(subscriptionIndex)
+    # createMapping(subscriptionIndex,subscriptionMapping)
+    updateUserSubscriptions('Pv5hTosBGZBkZraVWyk8','prime')
+    # print(getAllRecords(subscriptionIndex))
+    # deleteAllRecords(subscriptionIndex)
+    # print(recommendOtherPlatforms('Pv5hTosBGZBkZraVWyk8'))

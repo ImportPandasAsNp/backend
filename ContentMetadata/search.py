@@ -2,6 +2,7 @@
 from es import esclient
 from ContentMetadata.mapping import indexName
 from Utils.AgeRating import ageRatingList
+from Utils.constants import PLATFORMS
 
 esclient.getClient()
 client = esclient.client
@@ -44,6 +45,14 @@ class QueryBuilder:
             self.query['query']['bool']["must"].append({
                 "terms":{
                     "age_rating":ageRatingList(rating)
+                }
+            })
+
+    def addPlatformsQuery(self,platformList):
+        if len(platformList)<len(PLATFORMS):
+            self.query['query']['bool']["must"].append({
+                "terms":{
+                    "platform":platformList
                 }
             })
 
