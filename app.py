@@ -20,6 +20,8 @@ from UserSubscriptions import service as UserSubscriptionsService
 from Recommendation.reranking import getFinalRecommendationsWithId, getFinalRecommendationsWithName
 from Recommendation.filtered import *
 
+from modelfeatures import ModelEmbeddings
+
 
 load_dotenv()
 app = FastAPI()
@@ -251,7 +253,10 @@ async def ping(query: str,request:Request, authorization: str = Header(None)) ->
 
     req['rating'] = request['rating']
     req["subscribed_platforms"] = userSubscriptions
-    print(req)
+
+    if len(req.keys())==2:
+        queryFeat = ModelEmbeddings.getEmbeddings(query)
+        return filterQueryWithFeatures(user_id,queryFeat,req)
 
     res = filterQuery(user_id, req)
     return res

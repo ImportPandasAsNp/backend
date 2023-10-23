@@ -10,6 +10,11 @@ import random
 #filter on user preferences and rerank
 def filterQuery(userId, queryDict):
     userFeatures = getFeaturesWithId(userId)
+
+    if len(userFeatures)==0:
+        movieData = getMetadataWithArguments(queryDict)
+        return movieData[0:min(len(movieData),15)]
+    
     movieData = getKNNMetadataWithFeature(userFeatures,queryDict,returnFeatures=True)
     movieData = reranking(userFeatures,movieData)
 
@@ -18,6 +23,17 @@ def filterQuery(userId, queryDict):
 
     return movieData
 
+def filterQueryWithFeatures(userId,feat,queryDict):
+    userFeatures = getFeaturesWithId(userId)
+    movieData = getKNNMetadataWithFeature(feat,queryDict,returnFeatures=True)
+
+    if len(userFeatures)>0:
+        movieData = reranking(userFeatures,movieData)
+
+    for data in movieData:
+        del data['feature']
+
+    return movieData
 
 def getMostFrequent(id, key,queryDict=None):
     history = getHistoryFromId(id)

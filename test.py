@@ -15,6 +15,7 @@ from Recommendation.filtered import *
 import pandas as pd
 from UserSubscriptions.mapping import subscriptionMapping,indexName as subscriptionIndex
 from UserSubscriptions.service import updateUserSubscriptions
+from modelfeatures import ModelEmbeddings
 
 
 
@@ -83,9 +84,10 @@ if __name__ == "__main__":
     # createMapping(content,contentMapping)
     # print(getAllRecords(content))
     # createIndex(subscriptionIndex)
-    deleteAllRecords(subscriptionIndex)
+    # deleteAllRecords(subscriptionIndex)
     # createMapping(subscriptionIndex,subscriptionMapping)
-    updateUserSubscriptions('Pv5hTosBGZBkZraVWyk8','prime')
+    # updateUserSubscriptions('Pv5hTosBGZBkZraVWyk8','prime')
+    print(ModelEmbeddings.getEmbeddings("Show me fun"))
     # print(getAllRecords(subscriptionIndex))
     # deleteAllRecords(subscriptionIndex)
     # print(recommendOtherPlatforms('Pv5hTosBGZBkZraVWyk8'))
