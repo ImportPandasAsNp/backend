@@ -50,12 +50,12 @@ def chkUser(email: str, password: str) -> dict:
     # print("chkUser", getUserIdFromToken(token))
     return {"message":"user authenticated", "body":{"user": user[0]["_source"], "token": token}}
 
-def createUser(name: str, email: str, password: str) -> dict:
+def createUser(name: str, email: str, password: str,genre:str) -> dict:
     user = getMetadataWithArguments({"email": email})
     if user:
         return Response(content='{"message": "user already exists"}', status_code=401, media_type='application/json')
     hashed_password = get_password_hash(password)
-    res = api.insertRecord("user_metadata", {"name":name, "email":email, "password":hashed_password, "country":"United States", "age_filter":"R", "genre":"comedy"})    
+    res = api.insertRecord("user_metadata", {"name":name, "email":email, "password":hashed_password, "country":"United States", "age_filter":"R", "genre":genre})    
     print("service", res)
     if res["result"] != "created":
         return Response(content='{"message": "Internal server error"}', status_code=500, media_type='application/json')

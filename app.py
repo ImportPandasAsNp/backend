@@ -54,6 +54,7 @@ class Auth(BaseModel):
     name: str
     email: str
     password: str
+    genre: str
 
 
 class WatchHistory(BaseModel):
@@ -73,7 +74,7 @@ class UserProfile(BaseModel):
 @app.post("/auth/signup")
 async def ping(req: Auth):
     print(req)
-    res = UserMetadataService.createUser(req.name, req.email, req.password)
+    res = UserMetadataService.createUser(req.name, req.email, req.password,req.genre)
     return res
 
 
