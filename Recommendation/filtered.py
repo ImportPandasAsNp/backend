@@ -113,7 +113,7 @@ def recommendOtherPlatforms(id, queryDict=None):
                 "rating":queryDict["rating"]
             }))
 
-        return random.sample(movieData,k=20)
+        return random.sample(movieData,min(20,len(movieData)))
 
     else:
         del queryDict['genre']
