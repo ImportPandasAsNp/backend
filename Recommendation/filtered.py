@@ -3,10 +3,18 @@ from UserFeatures.service import getFeaturesWithId
 from Recommendation.reranking import reranking
 from UserHistory.service import getHistoryFromId
 from ContentMetadata.service import getMetadataWithIds,getMetadataWithArguments
+from UserSubscriptions.service import getSubscriptionsFromId
+from Utils.constants import PLATFORMS
+import random
 
 #filter on user preferences and rerank
 def filterQuery(userId, queryDict):
     userFeatures = getFeaturesWithId(userId)
+
+    if len(userFeatures)==0:
+        movieData = getMetadataWithArguments(queryDict)
+        return movieData[0:min(len(movieData),15)]
+    
     movieData = getKNNMetadataWithFeature(userFeatures,queryDict,returnFeatures=True)
     movieData = reranking(userFeatures,movieData)
 
@@ -15,6 +23,20 @@ def filterQuery(userId, queryDict):
 
     return movieData
 
+def filterQueryWithFeatures(userId,feat,queryDict):
+    userFeatures = getFeaturesWithId(userId)
+    movieData = getKNNMetadataWithFeature(feat,queryDict,returnFeatures=True)
+
+    if len(userFeatures)>0:
+        movieData = reranking(userFeatures,movieData)
+
+    else:
+        movieData = reranking(feat, movieData)
+
+    for data in movieData:
+        del data['feature']
+
+    return movieData
 
 def getMostFrequent(id, key,queryDict=None):
     history = getHistoryFromId(id)
@@ -62,7 +84,53 @@ def getMostFrequent(id, key,queryDict=None):
 
     filteredMetadata = getKNNMetadataWithFeature(userFeature,{
         key:maxKey,
-        'rating':queryDict['rating']
+        'rating':queryDict['rating'],
+        "subscribed_platforms":queryDict["subscribed_platforms"]
     })
 
     return {"key":maxKey,"data":filteredMetadata}
+
+
+def recommendOtherPlatforms(id, queryDict=None):
+    subs = getSubscriptionsFromId(id)
+
+    if queryDict is None:
+        queryDict = dict()
+
+    if "rating" not in queryDict:
+        queryDict["rating"]="A"
+
+    userFeatures = getFeaturesWithId(id)
+    otherPlatforms = [p for p in PLATFORMS if p not in subs]
+    movieData = []
+
+    if len(userFeatures)==0 and "genre" in queryDict:
+        print("Here")
+        for p in otherPlatforms:
+            movieData.extend(getMetadataWithArguments({
+                "genre":queryDict["genre"],
+                "platform":p,
+                "rating":queryDict["rating"]
+            }))
+
+        return random.sample(movieData,min(20,len(movieData)))
+
+    else:
+        del queryDict['genre']
+
+    
+    for p in otherPlatforms:
+        movieData.extend(getKNNMetadataWithFeature(userFeatures,{
+            "platform":p,
+            "rating":queryDict["rating"]
+        },returnFeatures=True))
+
+    movieData = reranking(userFeatures,movieData)
+
+    for data in movieData:
+        del data['feature']
+
+    return movieData[0:min(len(movieData),20)]
+
+
+

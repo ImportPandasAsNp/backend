@@ -1,5 +1,6 @@
 from ContentMetadata.search import getIds, QueryBuilder
 
+
 def getContentMetadata(row):
     return [data for data in row['hits']['hits']]
 
@@ -23,10 +24,13 @@ def getMetadataWithArguments(argDict):
     builder = QueryBuilder.builder()
 
     for key in argDict.keys():
-        if key!="rating":
-            builder.addQuery(key, argDict[key])
-        else:
+        if key=="rating":
             builder.addRatingQuery(argDict["rating"])
+        elif key=="subscribed_platforms":
+            builder.addPlatformsQuery(argDict["subscribed_platforms"])
+        else:
+            builder.addQuery(key, argDict[key])
+
 
     if len(argDict.keys()) > 0:
         res = builder.execute()
