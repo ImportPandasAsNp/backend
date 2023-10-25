@@ -2,6 +2,7 @@ from langchain.embeddings import HuggingFaceEmbeddings, SentenceTransformerEmbed
 import string
 
 MODEL = None
+EMBDIM = 576
 
 
 
@@ -25,7 +26,10 @@ class ModelEmbeddings():
     
     @staticmethod
     def getEmbeddings(text):
+        global EMBDIM
         model = ModelEmbeddings.getModel()
         text = ModelEmbeddings.preprocessText(text)
+
+        text.extend([i for i in range(EMBDIM-512)])
 
         return model.embed_query(text)

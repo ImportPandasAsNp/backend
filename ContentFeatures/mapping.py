@@ -1,11 +1,11 @@
-indexName = "moviefeaturesnew"
+indexName = "moviefeaturesnewer"
 
 featureMapping = {
     "properties":{
         "id": {"type": "text"},
         "feature":{
             "type":"knn_vector",
-            "dimension":512,
+            "dimension":576,
             "similarity":"cosinesimil"
         }
     }
