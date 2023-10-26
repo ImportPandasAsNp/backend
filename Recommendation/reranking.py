@@ -27,7 +27,7 @@ def getFinalRecommendationsWithId(id, queryDict=None):
             "subscribed_platforms":queryDict["subscribed_platforms"]
         })
 
-        return random.sample(movieData,k=20)
+        return random.sample(movieData,min(len(movieData),20))
     
     else:
         del queryDict['genre']

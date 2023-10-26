@@ -29,7 +29,8 @@ class ModelEmbeddings():
         global EMBDIM
         model = ModelEmbeddings.getModel()
         text = ModelEmbeddings.preprocessText(text)
+        text = model.embed_query(text)
 
-        text.extend([i for i in range(EMBDIM-512)])
-
-        return model.embed_query(text)
+        text.extend([ 0.0 for _ in range(EMBDIM-512)])
+ 
+        return text
