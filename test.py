@@ -6,8 +6,8 @@ from UserFeatures.service import getNearestUsersWithUserName,getNearestUsersWith
 from UserHistory.mapping import historyMapping, indexName as historyIndex
 from UserHistory.update import updateHistory, updateUserFeature
 from Recommendation.ContentBased import recommendBasedOnId,recommendBasedOnName
-from ContentMetadata.service import getMetadataWithIds as movie
-from ContentMetadata.mapping import indexName as content,contentMapping
+from ContentMetadata.service import getMetadataWithIds as movie,getMetadataWithArguments as getta
+from ContentMetadata.mapping import indexName as content,contentMapping,contentSetting
 from Recommendation.Collaborative import recommendBasedOnId as collabId
 from Recommendation.reranking import getFinalRecommendationsWithId, getFinalRecommendationsWithName
 from UserHistory.service import getHistoryFromNames,getHistoryFromIds
@@ -105,7 +105,18 @@ if __name__ == "__main__":
     # print(getAllRecords(featureIndex))
     # openIndex(featureIndex)
     # deleteAllRecords(historyIndex)
-    deleteAllRecords(historyIndex)
-    deleteAllRecords(subscriptionIndex)
-    deleteAllRecords(metadataIndex)
-    deleteAllRecords(featureIndex)
+    # deleteAllRecords(historyIndex)
+    # deleteAllRecords(subscriptionIndex)
+    # deleteAllRecords(metadataIndex)
+    # deleteAllRecords(featureIndex)
+    # deleteAllRecords("moviemetadata")
+    # deleteIndex("moviemetadata")
+    # createIndex(content)
+    # closeIndex(content)
+    # createSetting(content,contentSetting)
+    # openIndex(content)
+    # createMapping(content,contentMapping)
+    # print(getAllRecords('moviemetadata2'))
+    print(getta({
+        'plot':'ugly looking ogre'
+    }))
