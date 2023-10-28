@@ -93,7 +93,6 @@ def getMostFrequent(id, key,queryDict=None):
 
 def recommendOtherPlatforms(id, queryDict=None):
     subs = getSubscriptionsFromId(id)
-
     if queryDict is None:
         queryDict = dict()
 

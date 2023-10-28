@@ -118,5 +118,5 @@ if __name__ == "__main__":
     # createMapping(content,contentMapping)
     # print(getAllRecords('moviemetadata2'))
     print(getta({
-        'plot':'ugly looking ogre'
+        'plot':''
     }))
