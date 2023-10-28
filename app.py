@@ -204,25 +204,27 @@ async def ping(query: Request,authorization: str = Header(None)):
     request['genre'] = userMetadata[0]["_source"]["genre"]
     
     # return userMetadata
-    print(request)
+    # print(request)
+    # print(recommendOtherPlatforms(user_id, request))
     return recommendOtherPlatforms(user_id, request)
 
 
 @app.post("/search")
 async def ping(query: str,request:Request, authorization: str = Header(None)) -> []:
     print(query)
-    # if not authorization:
-    #     return Response(content='{"message": "user not authenticated"}', status_code=403, media_type='application/json')
-    # token = authorization.split(' ')[1]
+    if not authorization:
+        return Response(content='{"message": "user not authenticated"}', status_code=403, media_type='application/json')
+    token = authorization.split(' ')[1]
 
     request = await request.body()
     request = json.loads(request.decode())
 
 
-    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiTHY2YVJvc0JHWkJrWnJhVmJ5bGEifQ.zFGj-07jTAwF74fI0Fqcs6B1RJOyvaBdGKrVyTFiyn8"
+    #token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiTHY2YVJvc0JHWkJrWnJhVmJ5bGEifQ.zFGj-07jTAwF74fI0Fqcs6B1RJOyvaBdGKrVyTFiyn8"
     user_id = UserMetadataService.getUserIdFromToken(token)
 
     userSubscriptions = UserSubscriptionsService.getSubscriptionsFromId(user_id)
+    print("Subscriptions ",userSubscriptions)
 
     # if len(userSubscriptions)==0:
     #     return []
@@ -263,6 +265,7 @@ async def ping(query: str,request:Request, authorization: str = Header(None)) ->
 
     req['rating'] = request['rating']
     req["subscribed_platforms"] = userSubscriptions
+    print(req)
 
     if len(req.keys())==2:
         queryFeat = ModelEmbeddings.getEmbeddings(query)
@@ -273,11 +276,11 @@ async def ping(query: str,request:Request, authorization: str = Header(None)) ->
 
 @app.get("/search/clear")
 async def ping(authorization: str = Header(None)) -> []:
-    # if not authorization:
-    #     return Response(content='{"message": "user not authenticated"}', status_code=403, media_type='application/json')
-    # token = authorization.split(' ')[1]
+    if not authorization:
+        return Response(content='{"message": "user not authenticated"}', status_code=403, media_type='application/json')
+    token = authorization.split(' ')[1]
 
-    token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiTHY2YVJvc0JHWkJrWnJhVmJ5bGEifQ.zFGj-07jTAwF74fI0Fqcs6B1RJOyvaBdGKrVyTFiyn8"
+    # token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiTHY2YVJvc0JHWkJrWnJhVmJ5bGEifQ.zFGj-07jTAwF74fI0Fqcs6B1RJOyvaBdGKrVyTFiyn8"
     user_id = UserMetadataService.getUserIdFromToken(token)
     try: 
         userChatClient.removeContext(user_id)

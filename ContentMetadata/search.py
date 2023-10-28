@@ -57,6 +57,17 @@ class QueryBuilder:
                 }
             })
 
+    def addPlotQuery(self,queryText):
+        self.query['query']['bool']['should']=list()
+        self.query['query']['bool']['should'].append({
+            'match':{
+                'plot':{
+                    'query':queryText,
+                    'minimum_should_match':'90%'
+                }
+            }
+        })
+
     def build(self):
         return self.query
 
