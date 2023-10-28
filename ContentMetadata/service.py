@@ -28,6 +28,8 @@ def getMetadataWithArguments(argDict):
             builder.addRatingQuery(argDict["rating"])
         elif key=="subscribed_platforms":
             builder.addPlatformsQuery(argDict["subscribed_platforms"])
+        elif key=="plot":
+            builder.addPlotQuery(argDict['plot'])
         else:
             builder.addQuery(key, argDict[key])
 

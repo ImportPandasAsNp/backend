@@ -13,7 +13,7 @@ def filterQuery(userId, queryDict):
 
     if len(userFeatures)==0:
         movieData = getMetadataWithArguments(queryDict)
-        return movieData[0:min(len(movieData),15)]
+        return random.sample(movieData,min(len(movieData),20))
     
     movieData = getKNNMetadataWithFeature(userFeatures,queryDict,returnFeatures=True)
     movieData = reranking(userFeatures,movieData)
@@ -93,7 +93,6 @@ def getMostFrequent(id, key,queryDict=None):
 
 def recommendOtherPlatforms(id, queryDict=None):
     subs = getSubscriptionsFromId(id)
-
     if queryDict is None:
         queryDict = dict()
 
@@ -113,7 +112,7 @@ def recommendOtherPlatforms(id, queryDict=None):
                 "rating":queryDict["rating"]
             }))
 
-        return random.sample(movieData,min(20,len(movieData)))
+        return random.sample(movieData,min(len(movieData),20))
 
     else:
         del queryDict['genre']
