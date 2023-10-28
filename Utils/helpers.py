@@ -1,13 +1,23 @@
 import copy
 
 def mergeContext(previous: dict, current: dict):
-    print(previous, current)
+    # print(previous, current)
     curr_keys = current.keys()
     prev_keys = previous.keys()
     res = copy.deepcopy(current)
     for key in curr_keys:
-        if key == "title" or key == "director":
+        # only considering the last title
+        if key == "title":
             continue
+        # appending every plot extracts
+        if key == "plot":
+            tmp = ""
+            if key in prev_keys:
+                tmp = previous[key]
+            res[key] = tmp + " " + res[key]
+            continue
+        # appnding every other lists (genre, cast, director)
+
         if type(res[key]) == str:
             print(key)
             tmp=[]
@@ -29,6 +39,16 @@ def mergeContext(previous: dict, current: dict):
     
     return res
 
+def getQuery(req: dict):
+    res = dict()
+    for key in req.keys():
+        if len(req[key]) == 0:
+            continue
+        if type(req[key]) == str and req[key] == "unknown":
+            continue
+        res.setdefault(key, req[key])
+
+@DeprecationWarning
 def textToDict(parsed_text): 
     parsed_fields = parsed_text.lower().split("\n")
     req = dict()

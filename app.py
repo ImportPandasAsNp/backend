@@ -243,24 +243,11 @@ async def ping(query: str,request:Request, authorization: str = Header(None)) ->
         messages=prompt_req
     )
 
-    parsed_text = completion.choices[0].message.content
-    print("qq", parsed_text)
-    # parsed_text="Title: None Provided\nDirector: Christopher Nolan\nCast: Tom Hardy\nGenre: None Provided"
-    # parsed_fields = parsed_text.lower().split("\n")
-    # req = dict()
-    # for item in parsed_fields:
-    #     tmp = item.split(":")
-    #     val = tmp[1].strip().split(", ")
-    #     if len(val) == 1:
-    #         if val[0] != "unknown":
-    #             req.setdefault(tmp[0].strip(), val[0])
-    #         continue
+    parsed_dict = completion.choices[0].message.content
+    print("qq", parsed_dict)
 
-    #     req.setdefault(tmp[0].strip(), val)
-
-    req_dict = textToDict(parsed_text)
-    req = userChatClient.addContext(user_id, req_dict)
-    print("gg", userChatClient.getContext(user_id))
+    req_dict = userChatClient.addContext(user_id, parsed_dict)
+    req = getQuery(req_dict)
     print(req)
 
     req['rating'] = request['rating']
