@@ -10,7 +10,7 @@ class UserChatClient:
     
     def getContext(self, userId):
         if userId not in self.client.keys():
-            self.client.setdefault(userId, dict())
+            self.client.setdefault(userId, { 'title': 'unknown',	'director': [],	'genre': [], 'cast': [], 'plot': 'unknown' })
         return self.client[userId]
     
     def addContext(self, userId, context):
@@ -18,6 +18,7 @@ class UserChatClient:
         return self.client[userId]
     
     def removeContext(self, userId):
-        self.client[userId] = dict()
+        # self.client[userId] = dict()
+        self.client.pop(userId)
 
 userChatClient = UserChatClient()

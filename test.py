@@ -117,6 +117,10 @@ if __name__ == "__main__":
     # openIndex(content)
     # createMapping(content,contentMapping)
     # print(getAllRecords('moviemetadata2'))
+    # deleteAllRecords("moviefeature")
+    # deleteIndex("moviefeature")
+    # deleteAllRecords("moviefeaturesnew")
+    # deleteIndex("moviefeaturesnew")
     print(getta({
         'plot':''
     }))

@@ -232,7 +232,7 @@ def main():
         metadata.at[index,"plot"]=data
         # print(data)
 
-        metadata.at[index,"plot"] = process_text(metadata.at[index,"plot"])
+        # metadata.at[index,"plot"] = process_text(metadata.at[index,"plot"])
 
         # break
 

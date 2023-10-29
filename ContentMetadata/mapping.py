@@ -57,4 +57,5 @@ contentSetting = {
   }
 }
 
-indexName = "moviemetadata2"
+indexName = "moviemetadata1"
+plotIndexName = "moviemetadata2"
