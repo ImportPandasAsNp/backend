@@ -1,6 +1,6 @@
 # from app import esclient
 from es import esclient
-from ContentMetadata.mapping import indexName
+from ContentMetadata.mapping import indexName,plotIndexName
 from Utils.AgeRating import ageRatingList
 from Utils.constants import PLATFORMS
 
@@ -17,6 +17,7 @@ class QueryBuilder:
                 }
             }
         }
+        self.plot = False
 
         # client = esclient.client
         # aws4auth = esclient.aws_auth_client
@@ -58,6 +59,7 @@ class QueryBuilder:
             })
 
     def addPlotQuery(self,queryText):
+        self.plot=True
         self.query['query']['bool']['should']=list()
         self.query['query']['bool']['should'].append({
             'match':{
@@ -72,7 +74,10 @@ class QueryBuilder:
         return self.query
 
     def execute(self):
-        res = client.search(index=indexName, body=self.query,size=5000)
+        if self.plot:
+            res = client.search(index=plotIndexName, body=self.query,size=5000)
+        else:
+            res = client.search(index=indexName, body=self.query,size=5000)
         return res
    
 
