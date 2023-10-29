@@ -1,41 +1,62 @@
 import copy
 
+# def mergeContext(previous: dict, current: dict):
+#     # print(previous, current)
+#     curr_keys = current.keys()
+#     prev_keys = previous.keys()
+#     res = copy.deepcopy(current)
+#     for key in curr_keys:
+#         # only considering the last title
+#         if key == "title":
+#             continue
+#         # appending every plot extracts
+#         if key == "plot":
+#             tmp = ""
+#             if key in prev_keys:
+#                 tmp = previous[key]
+#             res[key] = tmp + " " + res[key]
+#             continue
+#         # appnding every other lists (genre, cast, director)
+
+#         if type(res[key]) == str:
+#             print(key)
+#             tmp=[]
+#             tmp.append(res[key])
+#             res[key] = tmp
+#         if key in prev_keys:
+#             if type(previous[key]) == str:
+#                 res[key].append(previous[key])
+#             else:
+#                 res[key].extend(previous[key])
+#             # res[key].extend(previous[key])
+#             # print(key, type(res[key]), res[key])
+#             res[key]=list(set(res[key]))
+    
+#     for key in previous.keys():
+#         if key not in curr_keys:
+#             res.setdefault(key, previous[key])
+
+    
+#     return res
+
 def mergeContext(previous: dict, current: dict):
     # print(previous, current)
-    curr_keys = current.keys()
-    prev_keys = previous.keys()
     res = copy.deepcopy(current)
-    for key in curr_keys:
-        # only considering the last title
+    for key in current.keys():
         if key == "title":
+            if res[key] == "unknown":
+                res[key] = previous[key]
             continue
-        # appending every plot extracts
         if key == "plot":
-            tmp = ""
-            if key in prev_keys:
-                tmp = previous[key]
-            res[key] = tmp + " " + res[key]
-            continue
-        # appnding every other lists (genre, cast, director)
-
-        if type(res[key]) == str:
-            print(key)
-            tmp=[]
-            tmp.append(res[key])
-            res[key] = tmp
-        if key in prev_keys:
-            if type(previous[key]) == str:
-                res[key].append(previous[key])
+            if previous[key] == "unknown":
+                continue
+            if res[key] == "unknown":
+                res[key] = previous[key]
             else:
-                res[key].extend(previous[key])
-            # res[key].extend(previous[key])
-            # print(key, type(res[key]), res[key])
-            res[key]=list(set(res[key]))
-    
-    for key in previous.keys():
-        if key not in curr_keys:
-            res.setdefault(key, previous[key])
-
+                res[key] = previous[key] + " " + res[key]
+            continue
+        res[key].extend(previous[key])
+        res[key]=list(set(res[key]))
     
     return res
 
@@ -47,6 +68,8 @@ def getQuery(req: dict):
         if type(req[key]) == str and req[key] == "unknown":
             continue
         res.setdefault(key, req[key])
+    
+    return res
 
 @DeprecationWarning
 def textToDict(parsed_text): 
