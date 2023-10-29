@@ -4,6 +4,7 @@ import re
 
 from es import esclient
 from UserFeatures.mapping import indexName
+from SessionContext.mem_db import userSessionVectorClient
 
 esclient.getClient()
 client = esclient.client
@@ -58,6 +59,9 @@ def knnQuery(args):
 
 
 def getFeature(id):
+    if len(userSessionVectorClient.getVector(id))!=0:
+        return userSessionVectorClient.getVector(id)
+    
     query = {
         'query':{
             'ids': {
@@ -69,9 +73,10 @@ def getFeature(id):
     res = client.search(index = indexName,body=query)
 
     if res['hits']['total']['value'] > 0:
+        userSessionVectorClient.setVector(id,res['hits']['hits'][0]['_source']['feature'])
         return res['hits']['hits'][0]['_source']['feature']
     
-    
+    userSessionVectorClient.setVector(id,[])
     return []
 
 

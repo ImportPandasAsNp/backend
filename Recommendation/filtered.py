@@ -6,6 +6,30 @@ from ContentMetadata.service import getMetadataWithIds,getMetadataWithArguments
 from UserSubscriptions.service import getSubscriptionsFromId
 from Utils.constants import PLATFORMS
 import random
+from SessionContext.mem_db import userSessionVectorClient
+
+
+def averageVectors(vectorList):
+    if not vectorList:
+        return []
+
+    # Ensure all vectors are of the same length
+    vectorLength = len(vectorList[0])
+    if not all(len(vector) == vectorLength for vector in vectorList):
+        raise ValueError("All input vectors must have the same length")
+
+    # Initialize the sum of vectors
+    sumVector = [0] * vectorLength
+
+    # Calculate the sum of vectors
+    for vector in vectorList:
+        sumVector = [sum(x) for x in zip(sumVector, vector)]
+
+    # Calculate the average vector
+    averageVector = [x / len(vectorList) for x in sumVector]
+
+    return averageVector
+
 
 #filter on user preferences and rerank
 def filterQuery(userId, queryDict):
@@ -17,6 +41,14 @@ def filterQuery(userId, queryDict):
     
     movieData = getKNNMetadataWithFeature(userFeatures,queryDict,returnFeatures=True)
     movieData = reranking(userFeatures,movieData)
+
+    avg = []
+
+    for i in range(0,min(3,len(movieData))):
+        avg.append(movieData[i]['feature'])
+
+    avg = averageVectors(avg)
+    userSessionVectorClient.addVector(id,avg)
 
     for data in movieData:
         del data['feature']
@@ -32,7 +64,14 @@ def filterQueryWithFeatures(userId,feat,queryDict):
 
     else:
         movieData = reranking(feat, movieData)
+    avg = []
 
+    for i in range(0,min(3,len(movieData))):
+        avg.append(movieData[i]['feature'])
+
+    avg = averageVectors(avg)
+    userSessionVectorClient.addVector(id,avg)
+    
     for data in movieData:
         del data['feature']
 

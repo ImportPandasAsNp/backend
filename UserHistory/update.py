@@ -4,6 +4,7 @@ from Utils.api import getRecord,updateRecord,insertRecord
 from ContentFeatures.service import getFeaturesWithId as getMovieFeaturesWithId
 from UserFeatures.service import getFeaturesWithId as getUserFeaturesWithId
 from UserFeatures.mapping import indexName as featureIndex
+from SessionContext.mem_db import userSessionVectorClient
 
 #data element is a list
 # [ movieId, duration ]
@@ -37,6 +38,8 @@ def updateHistory(id, dataElement):
             "history":[dataElement]
         })
         movieFeatures = getMovieFeaturesWithId(dataElement[0])
+
+        userSessionVectorClient.setVector(id,movieFeatures)
         insertRecord(featureIndex,{
             "id":id,
             "feature":movieFeatures
@@ -66,6 +69,7 @@ def updateUserFeature(id,dataElement,prevHistory=None):
     if prevHistory is not None:
         weight=  getWeightage(dataElement,prevHistory)
     updatedFeat = add(moviefeat,userFeat,weight)
+    userSessionVectorClient.setVector(id,updatedFeat)
     
     record = {
         "id":id,
