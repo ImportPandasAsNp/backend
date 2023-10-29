@@ -19,6 +19,7 @@ class UserChatClient:
     
     def removeContext(self, userId):
         # self.client[userId] = dict()
-        self.client.pop(userId)
+        if userId in self.client:
+            self.client.pop(userId)
 
 userChatClient = UserChatClient()
