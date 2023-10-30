@@ -65,7 +65,7 @@ class QueryBuilder:
             'match':{
                 'plot':{
                     'query':queryText,
-                    'minimum_should_match':'20%',
+                    'minimum_should_match':'40%',
                     'fuzziness':'1'
                 }
             }

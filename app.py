@@ -45,7 +45,7 @@ app.add_middleware(
 esclient.getClient()
 userChatClient.getClient()
 # print(es.ping)
-openai.api_key = os.getenv("open_ai_api_key")
+openai.api_key = os.getenv("open_ai_api_key_2")
 
 
 @app.get("/")
@@ -218,12 +218,11 @@ async def ping(query: str,request:Request, authorization: str = Header(None)) ->
 
     request = await request.body()
     request = json.loads(request.decode())
+    user_id = UserMetadataService.getUserIdFromToken(token)
 
+    userSubscriptions = UserSubscriptionsService.getSubscriptionsFromId(user_id)
     try:
         #token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiTHY2YVJvc0JHWkJrWnJhVmJ5bGEifQ.zFGj-07jTAwF74fI0Fqcs6B1RJOyvaBdGKrVyTFiyn8"
-        user_id = UserMetadataService.getUserIdFromToken(token)
-
-        userSubscriptions = UserSubscriptionsService.getSubscriptionsFromId(user_id)
 
         if len(userSubscriptions)==0:
             return []
@@ -268,6 +267,9 @@ async def ping(query: str,request:Request, authorization: str = Header(None)) ->
         return res
     
     except Exception:
+        req = dict()
+        req['rating'] = request['rating']
+        req["subscribed_platforms"] = userSubscriptions
         queryFeat = ModelEmbeddings.getEmbeddings(query)
         return filterQueryWithFeatures(user_id,queryFeat,req)
 
