@@ -142,6 +142,9 @@ def recommendOtherPlatforms(id, queryDict=None):
     otherPlatforms = [p for p in PLATFORMS if p not in subs]
     movieData = []
 
+    if len(otherPlatforms)==0:
+        return [],"None"
+
     if len(userFeatures)==0 and "genre" in queryDict:
         print("Here")
         for p in otherPlatforms:
@@ -151,7 +154,7 @@ def recommendOtherPlatforms(id, queryDict=None):
                 "rating":queryDict["rating"]
             }))
 
-        return random.sample(movieData,min(len(movieData),20))
+        return random.sample(movieData,min(len(movieData),20)),otherPlatforms[0]
 
     else:
         del queryDict['genre']
@@ -163,12 +166,30 @@ def recommendOtherPlatforms(id, queryDict=None):
             "rating":queryDict["rating"]
         },returnFeatures=True))
 
-    movieData = reranking(userFeatures,movieData)
+    movieData = reranking(userFeatures,movieData,returnDot=True)
 
     for data in movieData:
         del data['feature']
 
-    return movieData[0:min(len(movieData),20)]
+    movieData = movieData[0:min(len(movieData),20)]
+    
+    dotDict = dict()
+
+    for data in movieData:
+        print(data)
+        if data['_source']['platform'] not in dotDict:
+            dotDict[data['_source']['platform']] = list()
+            dotDict[data['_source']['platform']].append(data['dot'])
+        
+        else:
+            dotDict[data['_source']['platform']].append(data['dot'])
+
+    for key in dotDict:
+        dotDict[key] = sum(dotDict[key])/len(dotDict[key])
+    maxKey = max(dotDict,key=dotDict.get)
+
+    return movieData,maxKey
+
 
 
 

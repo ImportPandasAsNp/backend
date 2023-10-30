@@ -11,8 +11,12 @@ import random
 def dotProduct(vector1, vector2):
     return np.dot(vector1, vector2)/(norm(vector1)*norm(vector2))
 
-def reranking(userFeature, movieContent):
+def reranking(userFeature, movieContent,returnDot=False):
     movieContent = sorted(movieContent, key=lambda x:dotProduct(userFeature,x['feature']),reverse=True)
+
+    if returnDot:
+        for x in movieContent:
+            x['dot'] = dotProduct(userFeature,x['feature'])
     return movieContent
 
 #merge content based and collab based and rerank
