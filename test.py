@@ -122,5 +122,5 @@ if __name__ == "__main__":
     # deleteAllRecords("moviefeaturesnew")
     # deleteIndex("moviefeaturesnew")
     print(getta({
-        'plot':''
+        'plot':'the galaxy is destroyed'
     }))

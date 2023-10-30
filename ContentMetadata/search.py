@@ -65,7 +65,8 @@ class QueryBuilder:
             'match':{
                 'plot':{
                     'query':queryText,
-                    'minimum_should_match':'90%'
+                    'minimum_should_match':'20%',
+                    'fuzziness':'1'
                 }
             }
         })
@@ -75,7 +76,7 @@ class QueryBuilder:
 
     def execute(self):
         if self.plot:
-            res = client.search(index=plotIndexName, body=self.query,size=5000)
+            res = client.search(index=plotIndexName, body=self.query,size=7)
         else:
             res = client.search(index=indexName, body=self.query,size=5000)
         return res
