@@ -79,10 +79,15 @@ def bulkUpload(indexName, data, saveSize=50):
     for index,row in data.iterrows():
         # print(len(json.loads(row['feature'])))
         row['feature'] = json.loads(row['feature'])
+
+        dataDict = dict()
+
+        for key in row.keys():
+            dataDict[key]=row[key]
         source = {
-                    'feature':row['feature'],
-                    'id':row['id']
+                    **dataDict
                     }
+        
                     
         action = {
                     '_index': indexName,

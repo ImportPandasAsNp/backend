@@ -16,6 +16,7 @@ import pandas as pd
 from UserSubscriptions.mapping import subscriptionMapping,indexName as subscriptionIndex
 from UserSubscriptions.service import updateUserSubscriptions
 from modelfeatures import ModelEmbeddings
+from PlotFeatures.mapping import plotMapping,plotSetting,indexName as plotIndex
 
 
 
@@ -121,6 +122,20 @@ if __name__ == "__main__":
     # deleteIndex("moviefeature")
     # deleteAllRecords("moviefeaturesnew")
     # deleteIndex("moviefeaturesnew")
-    print(getta({
-        'plot':'a worker seeks revenge by killing her killer'
-    }))
+    # print(getta({
+    #     'plot':'a worker seeks revenge by killing her killer'
+    # }))
+    # createIndex(plotIndex)
+    # closeIndex(plotIndex)
+    # createSetting(plotIndex,plotSetting)
+    # openIndex(plotIndex)
+    # createMapping(plotIndex,plotMapping)
+    # deleteAllRecords(plotIndex)
+    # df = pd.read_csv("/Users/adityaganguly/college/Hackon/backend/finalmetadata.csv")
+    # df.drop(["plot"],axis=1,inplace=True)
+    # df["image_url"] = df["image_url"].fillna("https://www.reelviews.net/resources/img/default_poster.jpg")
+    # df["imdb_rating"] = df["imdb_rating"].fillna(1.0)
+    # df["rating"] = df["rating"].fillna("G")
+    # print(len(df))
+    # bulkUpload(plotIndex,df)
+    print(getAllRecords(plotIndex))
