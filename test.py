@@ -17,6 +17,7 @@ from UserSubscriptions.mapping import subscriptionMapping,indexName as subscript
 from UserSubscriptions.service import updateUserSubscriptions
 from modelfeatures import ModelEmbeddings
 from PlotFeatures.mapping import plotMapping,plotSetting,indexName as plotIndex
+from UserWatchDuration.service import getPrediction
 
 
 
@@ -138,4 +139,5 @@ if __name__ == "__main__":
     # df["rating"] = df["rating"].fillna("G")
     # print(len(df))
     # bulkUpload(plotIndex,df)
-    print(getAllRecords(plotIndex))
+    # print(getAllRecords(historyIndex,2))
+    print(getPrediction('ff5RhosBGZBkZraVVynk'))

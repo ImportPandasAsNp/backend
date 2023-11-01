@@ -4,8 +4,6 @@ import string
 MODEL = None
 EMBDIM = 576
 
-
-
 class ModelEmbeddings():
     def __init__(self):
         pass
