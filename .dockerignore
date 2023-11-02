@@ -1,0 +1,8 @@
+.git*
+.vscode*
+__pycache__
+*/__pycache__
+*.csv
+*.md
+Lambdas/
+external/
